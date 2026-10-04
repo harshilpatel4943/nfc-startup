@@ -1,0 +1,187 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --cave-black: #120F0D;
+    --cave-shadow: #191512;
+    --burnt-earth: #4A2E1D;
+    --ancient-sand: #C6A477;
+    --bone-ivory: #EFE4CF;
+    --warm-lamp: #FFF1D1;
+    --terracotta: #8C5138;
+    --parchment-ink: #2A1A10;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    background-color: #120F0D;
+    color: #EFE4CF;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@theme {
+  --color-cave-black: #120F0D;
+  --color-cave-shadow: #191512;
+  --color-burnt-earth: #4A2E1D;
+  --color-ancient-sand: #C6A477;
+  --color-bone-ivory: #EFE4CF;
+  --color-warm-lamp: #FFF1D1;
+  --color-terracotta: #8C5138;
+  
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Cinzel Decorative', 'Cormorant Garamond', serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Safe Area Insets for Mobile (iPhone Notch & Dynamic Island) */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5rem);
+}
+
+.pt-safe {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
+}
+
+/* Custom Scrollbar for Mobile and Desktop */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #120F0D;
+}
+::-webkit-scrollbar-thumb {
+  background: #4A2E1D;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C6A477;
+}
+
+/* Subterranean Cave Background with Warm Lamp Vignette */
+.cave-dark-texture {
+  background-color: #120F0D;
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(255, 241, 209, 0.12) 0%, rgba(198, 164, 119, 0.04) 40%, rgba(18, 15, 13, 1) 85%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='caveNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23caveNoise)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* Mobile Kraft Parchment Card Texture */
+.parchment-texture {
+  background-color: #E8DCC6;
+  background-image: 
+    radial-gradient(ellipse at 50% 25%, rgba(248, 242, 230, 0.95) 0%, rgba(232, 220, 198, 0.95) 60%, rgba(206, 188, 158, 0.98) 100%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperGrain)' opacity='0.045'/%3E%3C/svg%3E");
+  color: #2A1A10;
+  box-shadow: 
+    inset 0 0 20px rgba(90, 57, 38, 0.15),
+    0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Warm Glow Accents */
+.warm-lamp-glow {
+  box-shadow: 0 0 25px rgba(255, 241, 209, 0.2), 0 0 50px rgba(198, 164, 119, 0.15);
+}
+
+.warm-lamp-glow-lg {
+  box-shadow: 0 0 40px rgba(255, 241, 209, 0.3), 0 0 80px rgba(198, 164, 119, 0.2);
+}
+
+/* Organic Pulse Animation */
+@keyframes subtleLampPulse {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.015); }
+}
+
+.animate-lamp-pulse {
+  animation: subtleLampPulse 4s ease-in-out infinite;
+}
+
+/* Hide scrollbars for horizontal slider */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 3D Perspective & Depth System */
+.perspective-1000 {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Glassmorphic 3D Card */
+.glass-3d-card {
+  background: rgba(26, 21, 18, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(198, 164, 119, 0.2);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 2px 10px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 241, 209, 0.18),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-3d-card:hover {
+  border-color: rgba(255, 241, 209, 0.35);
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.8),
+    0 0 30px rgba(198, 164, 119, 0.25),
+    inset 0 1px 2px rgba(255, 241, 209, 0.3);
+}
+
+/* 3D Floating Animation */
+@keyframes float3D {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
+  25% {
+    transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
+  }
+  50% {
+    transform: translateY(-10px) rotateX(0deg) rotateY(3deg);
+  }
+  75% {
+    transform: translateY(-4px) rotateX(-2deg) rotateY(1deg);
+  }
+}
+
+.animate-float-3d {
+  animation: float3D 6s ease-in-out infinite;
+}
+
+/* Glowing Neon 3D Border Light */
+.glow-border-3d {
+  position: relative;
+}
+
+.glow-border-3d::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,241,209,0.5), rgba(198,164,119,0.1), rgba(140,81,56,0.4));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
