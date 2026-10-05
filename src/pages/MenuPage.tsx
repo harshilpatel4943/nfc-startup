@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { menuCategories, menuItems } from '../data/menuData';
 import { ParchmentCard } from '../components/common/ParchmentCard';
 import { TribalDivider } from '../components/common/TribalDivider';
-import { Search, Crown, X, Utensils, ArrowLeft, SlidersHorizontal } from 'lucide-react';
+import { Search, Crown, X, Utensils, ArrowLeft, Flame, Sparkles } from 'lucide-react';
+import { AmbientCaveGlow } from '../components/common/AmbientCaveGlow';
 
 interface MenuPageProps {
   onBackToHome: () => void;
@@ -31,39 +33,44 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#120F0D] text-[#EFE4CF] pt-16 pb-28 px-3.5 sm:px-4 cave-dark-texture select-none">
-      <div className="max-w-md mx-auto">
-        {/* Top Mobile Bar with Back Button */}
-        <div className="flex items-center justify-between mb-4">
-          <button
-            onClick={onBackToHome}
-            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-[#191512] border border-[#C6A477]/40 text-xs font-sans font-bold text-[#EFE4CF] hover:text-[#FFF1D1] active:scale-95 transition-all"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 text-[#C6A477]" />
-            <span>HOME</span>
-          </button>
+    <div className="min-h-screen bg-[#120F0D] text-[#EFE4CF] pt-16 pb-28 px-3.5 sm:px-4 select-none relative overflow-x-hidden">
+      {/* Flaming Balls & Subterranean Firelight Aura Background Effect */}
+      <AmbientCaveGlow isDarkMode={true} />
 
-          <span className="text-[10px] font-sans font-bold tracking-[0.25em] text-[#C6A477] uppercase">
-            PARCHMENT MENU
+      <div className="max-w-md mx-auto relative z-10">
+        {/* Top Mobile Navigation Bar with Back Button */}
+        <div className="flex items-center justify-between mb-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onBackToHome}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-[#191512]/90 border border-[#C6A477]/40 text-xs font-sans font-bold text-[#EFE4CF] shadow-lg hover:border-[#C6A477] transition-all"
+          >
+            <ArrowLeft className="w-4 h-4 text-[#C6A477]" />
+            <span>HOME</span>
+          </motion.button>
+
+          <span className="text-[10px] font-sans font-extrabold tracking-[0.25em] text-[#C6A477] uppercase flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-[#FF9500]" /> PARCHMENT MENU
           </span>
         </div>
 
         {/* Menu Header Title */}
-        <div className="text-center mb-5">
-          <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-wider text-[#EFE4CF] flex items-center justify-center space-x-2">
-            <Utensils className="w-5 h-5 text-[#C6A477]" />
+        <div className="text-center mb-6">
+          <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-wider text-[#EFE4CF] flex items-center justify-center space-x-2 drop-shadow-md">
+            <Flame className="w-6 h-6 text-[#C6A477] animate-pulse" />
             <span>THE CAVE MENU</span>
           </h1>
           <p className="font-serif italic text-xs text-[#FFF1D1]/80 mt-1">
-            "Authentic flavours crafted across regional India"
+            "Authentic regional flavours crafted in ancient subterranean warmth"
           </p>
-          <div className="w-40 mx-auto my-1">
+          <div className="w-44 mx-auto my-1.5 opacity-80">
             <TribalDivider variant="minimal" />
           </div>
         </div>
 
-        {/* Search & Maharaja Filter Strip */}
-        <div className="space-y-2.5 mb-4">
+        {/* Search & Maharaja Filter Bar */}
+        <div className="space-y-2.5 mb-5">
           {/* Quick Search Input */}
           <div className="relative">
             <Search className="w-4 h-4 text-[#C6A477] absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -71,8 +78,8 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search paneer, biryani, thandai, soups..."
-              className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-[#191512] border border-[#4A2E1D] text-xs text-[#EFE4CF] placeholder-[#C6A477]/50 focus:outline-none focus:border-[#C6A477] transition-all shadow-inner"
+              placeholder="Search paneer, biryani, thandai, starters..."
+              className="w-full pl-10 pr-9 py-3 rounded-2xl bg-[#191512]/90 backdrop-blur-md border border-[#C6A477]/30 text-xs text-[#EFE4CF] placeholder-[#C6A477]/50 focus:outline-none focus:border-[#C6A477] transition-all shadow-inner"
             />
             {searchQuery && (
               <button
@@ -86,7 +93,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
           </div>
 
           {/* Quick Toggle: Maharaja Specials Only */}
-          <div className="flex items-center justify-between bg-[#191512] px-3.5 py-2 rounded-xl border border-[#4A2E1D]/80">
+          <div className="flex items-center justify-between bg-[#191512]/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-[#C6A477]/30">
             <div className="flex items-center space-x-2">
               <Crown className="w-4 h-4 text-[#C6A477]" />
               <span className="text-xs font-sans font-bold text-[#EFE4CF]">Maharaja Specials Only</span>
@@ -94,12 +101,12 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
             <button
               onClick={() => setShowMaharajaOnly(!showMaharajaOnly)}
               className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${
-                showMaharajaOnly ? 'bg-[#C6A477]' : 'bg-[#4A2E1D]/60'
+                showMaharajaOnly ? 'bg-gradient-to-r from-[#8C5138] to-[#C6A477]' : 'bg-[#4A2E1D]/60'
               }`}
               aria-label="Filter Maharaja Specials"
             >
               <div
-                className={`w-5 h-5 rounded-full bg-[#120F0D] transition-transform shadow-md ${
+                className={`w-5 h-5 rounded-full bg-white transition-transform shadow-md ${
                   showMaharajaOnly ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
@@ -110,15 +117,15 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
         {/* Sticky Mobile Horizontally Scrollable Category Pill Navigation */}
         <div 
           ref={categoryScrollRef}
-          className="sticky top-14 z-30 bg-[#120F0D]/95 backdrop-blur-md py-2.5 -mx-3.5 px-3.5 border-y border-[#4A2E1D]/60 mb-5 overflow-x-auto no-scrollbar scroll-smooth"
+          className="sticky top-14 z-30 bg-[#120F0D]/95 backdrop-blur-xl py-3 -mx-3.5 px-3.5 border-y border-[#C6A477]/30 mb-5 overflow-x-auto no-scrollbar scroll-smooth"
         >
-          <div className="flex items-center space-x-2 w-max pr-4">
+          <div className="flex items-center space-x-2.5 w-max pr-4">
             <button
               onClick={() => handleCategorySelect('ALL')}
               className={`min-h-[40px] px-4 py-1.5 rounded-full text-xs font-sans font-extrabold tracking-wider uppercase whitespace-nowrap transition-all duration-200 active:scale-95 ${
                 selectedCategory === 'ALL'
-                  ? 'bg-[#C6A477] text-[#120F0D] shadow-[0_0_15px_rgba(198,164,119,0.45)]'
-                  : 'bg-[#191512] text-[#EFE4CF]/80 border border-[#4A2E1D] hover:text-[#FFF1D1]'
+                  ? 'bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white shadow-[0_0_15px_rgba(198,164,119,0.5)] border border-[#C6A477]'
+                  : 'bg-[#191512] text-[#EFE4CF]/80 border border-[#C6A477]/30 hover:text-[#FFF1D1]'
               }`}
             >
               ALL DISHES ({menuItems.length})
@@ -131,8 +138,8 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
                   onClick={() => handleCategorySelect(cat.id)}
                   className={`min-h-[40px] px-4 py-1.5 rounded-full text-xs font-sans font-extrabold tracking-wider uppercase whitespace-nowrap transition-all duration-200 active:scale-95 ${
                     selectedCategory === cat.id
-                      ? 'bg-[#C6A477] text-[#120F0D] shadow-[0_0_15px_rgba(198,164,119,0.45)]'
-                      : 'bg-[#191512] text-[#EFE4CF]/80 border border-[#4A2E1D] hover:text-[#FFF1D1]'
+                      ? 'bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white shadow-[0_0_15px_rgba(198,164,119,0.5)] border border-[#C6A477]'
+                      : 'bg-[#191512] text-[#EFE4CF]/80 border border-[#C6A477]/30 hover:text-[#FFF1D1]'
                   }`}
                 >
                   {cat.name} ({count})
@@ -142,9 +149,9 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
           </div>
         </div>
 
-        {/* Category Header Banner (when a specific category is chosen) */}
+        {/* Category Header Banner */}
         {selectedCategory !== 'ALL' && (
-          <div className="mb-4 pb-2 border-b border-[#4A2E1D]/40">
+          <div className="mb-4 pb-2 border-b border-[#C6A477]/30">
             {menuCategories
               .filter((c) => c.id === selectedCategory)
               .map((c) => (
@@ -160,11 +167,11 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
         )}
 
         {/* Results Counter */}
-        <div className="flex items-center justify-between text-[11px] font-sans text-[#C6A477]/80 mb-3 px-1">
+        <div className="flex items-center justify-between text-[11px] font-sans text-[#C6A477] mb-3 px-1">
           <span>{filteredItems.length} dishes available</span>
           {showMaharajaOnly && (
             <span className="text-[#FFF1D1] font-semibold flex items-center space-x-1">
-              <Crown className="w-3 h-3 text-[#C6A477]" />
+              <Crown className="w-3.5 h-3.5 text-[#C6A477]" />
               <span>Maharaja Curated</span>
             </span>
           )}
@@ -172,8 +179,8 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
 
         {/* Main List of Dishes */}
         {filteredItems.length === 0 ? (
-          <div className="text-center py-12 bg-[#191512] rounded-2xl border border-[#4A2E1D] p-6 shadow-md">
-            <Utensils className="w-10 h-10 text-[#C6A477]/40 mx-auto mb-2" />
+          <div className="text-center py-12 bg-[#191512]/90 backdrop-blur-md rounded-3xl border border-[#C6A477]/30 p-6 shadow-xl">
+            <Utensils className="w-10 h-10 text-[#C6A477]/50 mx-auto mb-2" />
             <h3 className="font-serif text-lg font-bold text-[#FFF1D1]">No Dishes Found</h3>
             <p className="text-xs font-sans text-[#EFE4CF]/60 mt-1 max-w-xs mx-auto">
               We couldn't find any dishes matching "{searchQuery}".
@@ -184,13 +191,13 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
                 setSelectedCategory('ALL');
                 setShowMaharajaOnly(false);
               }}
-              className="mt-4 px-5 py-2.5 rounded-full bg-[#C6A477] text-[#120F0D] font-sans font-bold text-xs uppercase shadow-md active:scale-95"
+              className="mt-4 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white font-sans font-extrabold text-xs uppercase shadow-md active:scale-95"
             >
               RESET FILTERS
             </button>
           </div>
         ) : (
-          <div className="space-y-3.5">
+          <div className="space-y-4">
             {filteredItems.map((item) => (
               <ParchmentCard key={item.id} item={item} />
             ))}
@@ -198,11 +205,11 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
         )}
 
         {/* Bottom Menu Footer Note */}
-        <div className="text-center mt-10 py-6 border-t border-[#4A2E1D]/40">
-          <p className="font-serif italic text-xs text-[#C6A477]/80">
+        <div className="text-center mt-10 py-6 border-t border-[#C6A477]/30">
+          <p className="font-serif italic text-xs text-[#C6A477]/90">
             All prices are in Indian Rupees (₹). Taxes applicable as per government guidelines.
           </p>
-          <div className="w-24 mx-auto my-2 opacity-50">
+          <div className="w-24 mx-auto my-2 opacity-60">
             <TribalDivider variant="minimal" />
           </div>
         </div>

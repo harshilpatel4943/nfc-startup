@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Play, RotateCcw, Trophy, Gamepad2, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Play, Pause, RotateCcw, Trophy, Gamepad2, Move } from 'lucide-react';
 
 interface SnakeModalProps {
   isOpen: boolean;
@@ -11,7 +11,7 @@ type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 type Position = { x: number; y: number };
 
 const GRID_SIZE = 15;
-const INITIAL_SPEED = 140;
+const INITIAL_SPEED = 135;
 
 export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
   const [snake, setSnake] = useState<Position[]>([
@@ -22,6 +22,7 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
   const [food, setFood] = useState<Position>({ x: 4, y: 4 });
   const [direction, setDirection] = useState<Direction>('UP');
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [highScore, setHighScore] = useState<number>(() => {
@@ -29,6 +30,7 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
     return saved ? parseInt(saved, 10) : 0;
   });
 
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null);
   const directionRef = useRef<Direction>(direction);
   directionRef.current = direction;
 
@@ -58,12 +60,54 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
     setFood(generateFood(initialSnake));
     setScore(0);
     setIsGameOver(false);
+    setIsPaused(false);
     setIsPlaying(true);
+  };
+
+  const togglePause = () => {
+    if (isPlaying && !isGameOver) {
+      setIsPaused((prev) => !prev);
+    }
+  };
+
+  // Touch Swipe Gesture Handlers for Mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartPos.current || !isPlaying || isPaused || isGameOver) return;
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartPos.current.x;
+    const deltaY = touch.clientY - touchStartPos.current.y;
+    const minSwipeDistance = 25;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Horizontal swipe
+      if (Math.abs(deltaX) > minSwipeDistance) {
+        if (deltaX > 0 && directionRef.current !== 'LEFT') {
+          setDirection('RIGHT');
+        } else if (deltaX < 0 && directionRef.current !== 'RIGHT') {
+          setDirection('LEFT');
+        }
+      }
+    } else {
+      // Vertical swipe
+      if (Math.abs(deltaY) > minSwipeDistance) {
+        if (deltaY > 0 && directionRef.current !== 'UP') {
+          setDirection('DOWN');
+        } else if (deltaY < 0 && directionRef.current !== 'DOWN') {
+          setDirection('UP');
+        }
+      }
+    }
+    touchStartPos.current = null;
   };
 
   // Handle Game Loop
   useEffect(() => {
-    if (!isPlaying || isGameOver || !isOpen) return;
+    if (!isPlaying || isPaused || isGameOver || !isOpen) return;
 
     const gameInterval = setInterval(() => {
       setSnake((prevSnake) => {
@@ -113,13 +157,18 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
     }, INITIAL_SPEED);
 
     return () => clearInterval(gameInterval);
-  }, [isPlaying, isGameOver, food, generateFood, highScore, isOpen]);
+  }, [isPlaying, isPaused, isGameOver, food, generateFood, highScore, isOpen]);
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
       const key = e.key;
+
+      if (key === ' ') {
+        togglePause();
+        return;
+      }
 
       if ((key === 'ArrowUp' || key === 'w' || key === 'W') && directionRef.current !== 'DOWN') {
         setDirection('UP');
@@ -134,26 +183,39 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
+  }, [isOpen, isPlaying, isGameOver]);
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/80 backdrop-blur-md">
+        <div className="fixed inset-0 h-[100dvh] w-screen z-50 flex flex-col items-center justify-center my-auto p-2 sm:p-4 bg-black/90 backdrop-blur-md overflow-hidden">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            className="w-full max-w-sm bg-[#171411] border border-[#C6A477]/40 rounded-3xl p-5 relative shadow-[0_25px_60px_rgba(0,0,0,0.9)] text-[#EFE4CF] overflow-hidden"
+            className="w-full max-w-sm bg-[#171411] border border-[#C6A477]/40 rounded-3xl p-5 relative shadow-[0_25px_60px_rgba(0,0,0,0.9)] text-[#EFE4CF] my-auto overflow-hidden flex flex-col"
           >
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition-colors active:scale-95"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            {/* Action Bar (Pause & Close) */}
+            <div className="absolute top-4 right-4 z-10 flex items-center space-x-2">
+              {isPlaying && !isGameOver && (
+                <button
+                  onClick={togglePause}
+                  className="px-2.5 py-1 rounded-full bg-[#8C5138]/40 border border-[#C6A477]/40 text-[#C6A477] text-xs font-bold flex items-center gap-1 hover:bg-[#8C5138] hover:text-white transition-all active:scale-95"
+                  aria-label="Pause or Resume game"
+                >
+                  {isPaused ? <Play className="w-3.5 h-3.5 fill-current" /> : <Pause className="w-3.5 h-3.5" />}
+                  <span>{isPaused ? 'Resume' : 'Pause'}</span>
+                </button>
+              )}
+              <button
+                onClick={onClose}
+                className="w-8 h-8 rounded-full bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition-colors active:scale-95"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             {/* Header */}
             <div className="flex items-center space-x-3 mb-4">
@@ -164,12 +226,14 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
                 <h3 className="font-extrabold text-base text-white tracking-tight leading-snug">
                   Cave Snake Game
                 </h3>
-                <p className="text-xs text-[#C6A477] font-medium">Table Dining Entertainment</p>
+                <p className="text-[11px] text-[#C6A477] font-medium flex items-center gap-1">
+                  <Move className="w-3 h-3 text-[#C6A477]" /> Swipe on screen to move
+                </p>
               </div>
             </div>
 
             {/* Scoreboard */}
-            <div className="flex items-center justify-between bg-black/40 border border-[#C6A477]/20 rounded-2xl px-4 py-2 mb-4 text-xs">
+            <div className="flex items-center justify-between bg-black/50 border border-[#C6A477]/20 rounded-2xl px-4 py-2 mb-3 text-xs">
               <div className="flex items-center space-x-1.5 font-bold text-white">
                 <span>SCORE:</span>
                 <span className="text-[#C6A477] font-mono text-sm">{score}</span>
@@ -181,8 +245,12 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            {/* Game Canvas Board */}
-            <div className="relative w-full aspect-square bg-black/80 rounded-2xl border border-[#C6A477]/30 overflow-hidden shadow-inner p-1">
+            {/* Touch Swipe Interactive Game Canvas Board */}
+            <div
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              className="relative w-full aspect-square bg-black/90 rounded-2xl border border-[#C6A477]/30 overflow-hidden shadow-inner p-1 select-none touch-none"
+            >
               {/* Grid Cells */}
               <div
                 className="w-full h-full grid gap-0.5"
@@ -208,7 +276,7 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
                           : isBody
                           ? 'bg-[#C6A477]/80'
                           : isFoodCell
-                          ? 'bg-[#FF2D55] animate-pulse rounded-full shadow-[0_0_10px_#FF2D55]'
+                          ? 'bg-[#FF2D55] animate-pulse rounded-full shadow-[0_0_12px_#FF2D55]'
                           : 'bg-white/[0.02]'
                       }`}
                     />
@@ -216,8 +284,8 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
                 })}
               </div>
 
-              {/* Start / Game Over Overlay */}
-              {(!isPlaying || isGameOver) && (
+              {/* Start / Pause / Game Over Overlay */}
+              {(!isPlaying || isPaused || isGameOver) && (
                 <div className="absolute inset-0 bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center">
                   {isGameOver ? (
                     <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
@@ -225,19 +293,31 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
                       <p className="text-xs text-gray-400 mt-1">Final Score: <span className="text-[#C6A477] font-bold">{score}</span></p>
                       <button
                         onClick={resetGame}
-                        className="mt-4 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white text-xs font-bold shadow-lg flex items-center space-x-2 active:scale-95 transition-all"
+                        className="mt-4 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white text-xs font-extrabold shadow-lg flex items-center space-x-2 active:scale-95 transition-all mx-auto"
                       >
                         <RotateCcw className="w-4 h-4" />
                         <span>Play Again</span>
                       </button>
                     </motion.div>
+                  ) : isPaused ? (
+                    <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+                      <h4 className="text-lg font-extrabold text-white">Game Paused</h4>
+                      <p className="text-xs text-gray-400 mt-1">Take your time! Tap below to resume.</p>
+                      <button
+                        onClick={togglePause}
+                        className="mt-4 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white text-xs font-extrabold shadow-lg flex items-center space-x-2 active:scale-95 transition-all mx-auto"
+                      >
+                        <Play className="w-4 h-4 fill-white" />
+                        <span>Resume Game</span>
+                      </button>
+                    </motion.div>
                   ) : (
                     <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
                       <h4 className="text-base font-extrabold text-white">Ready to Play?</h4>
-                      <p className="text-xs text-gray-400 mt-1">Guide the snake to collect golden elixirs!</p>
+                      <p className="text-xs text-gray-400 mt-1">Swipe anywhere on screen to steer!</p>
                       <button
                         onClick={resetGame}
-                        className="mt-4 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white text-xs font-extrabold shadow-lg flex items-center space-x-2 active:scale-95 transition-all"
+                        className="mt-4 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white text-xs font-extrabold shadow-lg flex items-center space-x-2 active:scale-95 transition-all mx-auto"
                       >
                         <Play className="w-4 h-4 fill-white" />
                         <span>Start Game</span>
@@ -248,41 +328,11 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
               )}
             </div>
 
-            {/* Mobile Touch Arrow Controls */}
-            <div className="mt-4 grid grid-cols-3 gap-2 w-36 mx-auto">
-              <div />
-              <button
-                onClick={() => directionRef.current !== 'DOWN' && setDirection('UP')}
-                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#C6A477] active:scale-90 transition-all flex items-center justify-center border border-white/10"
-                aria-label="Up"
-              >
-                <ChevronUp className="w-5 h-5" />
-              </button>
-              <div />
-
-              <button
-                onClick={() => directionRef.current !== 'RIGHT' && setDirection('LEFT')}
-                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#C6A477] active:scale-90 transition-all flex items-center justify-center border border-white/10"
-                aria-label="Left"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={() => directionRef.current !== 'UP' && setDirection('DOWN')}
-                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#C6A477] active:scale-90 transition-all flex items-center justify-center border border-white/10"
-                aria-label="Down"
-              >
-                <ChevronDown className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={() => directionRef.current !== 'LEFT' && setDirection('RIGHT')}
-                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#C6A477] active:scale-90 transition-all flex items-center justify-center border border-white/10"
-                aria-label="Right"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+            {/* Mobile Touch Swipe Hint Footer */}
+            <div className="mt-3 text-center">
+              <span className="text-[10px] font-sans text-gray-400 tracking-wider uppercase font-semibold">
+                👈 Swipe Left / Right / Up / Down 👉
+              </span>
             </div>
           </motion.div>
         </div>

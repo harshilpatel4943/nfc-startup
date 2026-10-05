@@ -15,8 +15,6 @@ export const LoyaltyModal: React.FC<LoyaltyModalProps> = ({ isOpen, onClose }) =
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
 
-  if (!isOpen) return null;
-
   const handleClaimStamp = () => {
     if (stamps < 9) {
       setStamps((prev) => prev + 1);
@@ -32,14 +30,15 @@ export const LoyaltyModal: React.FC<LoyaltyModalProps> = ({ isOpen, onClose }) =
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, rotateX: 15 }}
-          animate={{ opacity: 0.99, scale: 1, rotateX: 0 }}
-          exit={{ opacity: 0, scale: 0.9, rotateX: -15 }}
-          transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
-          className="w-full max-w-sm glass-3d-card rounded-3xl p-6 relative border border-[#C6A477]/30 shadow-[0_25px_60px_rgba(0,0,0,0.9)] perspective-1000 overflow-hidden"
-        >
+      {isOpen && (
+        <div className="fixed inset-0 h-[100dvh] w-screen z-50 flex flex-col items-center justify-center my-auto p-4 bg-black/80 backdrop-blur-md overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            className="w-full max-w-sm glass-3d-card rounded-3xl p-6 relative border border-[#C6A477]/30 shadow-[0_25px_60px_rgba(0,0,0,0.9)] my-auto overflow-hidden bg-[#171411] text-[#EFE4CF]"
+          >
           {/* Ambient Lighting Orbs */}
           <div className="absolute -top-12 -left-12 w-36 h-36 bg-[#C6A477]/15 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute -bottom-12 -right-12 w-36 h-36 bg-[#8C5138]/20 rounded-full blur-2xl pointer-events-none" />
@@ -192,7 +191,8 @@ export const LoyaltyModal: React.FC<LoyaltyModalProps> = ({ isOpen, onClose }) =
             </motion.div>
           )}
         </motion.div>
-      </div>
+        </div>
+      )}
     </AnimatePresence>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, Bell, Droplet, Receipt, UserCheck, CheckCircle2 } from 'lucide-react';
 import { TribalDivider } from '../common/TribalDivider';
 
@@ -10,8 +11,6 @@ interface CallStaffModalProps {
 export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose }) => {
   const [activeRequest, setActiveRequest] = useState<string | null>(null);
 
-  if (!isOpen) return null;
-
   const handleRequest = (type: string) => {
     setActiveRequest(type);
     setTimeout(() => {
@@ -21,14 +20,22 @@ export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose 
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#171411]/90 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="relative w-full max-w-sm bg-[#171411] border border-[#C6A477]/50 rounded-2xl p-6 shadow-2xl cave-dark-texture text-[#EFE4CF]">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-[#5A3926]/30 text-[#C6A477] hover:text-[#FFF1D1]"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 h-[100dvh] w-screen z-50 flex flex-col items-center justify-center my-auto p-4 bg-black/80 backdrop-blur-md overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            className="relative w-full max-w-sm bg-[#171411] border border-[#C6A477]/50 rounded-3xl p-6 shadow-2xl text-[#EFE4CF] my-auto overflow-hidden"
+          >
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 rounded-full bg-[#5A3926]/30 text-[#C6A477] hover:text-[#FFF1D1] active:scale-95 transition-all"
+            >
+              <X className="w-5 h-5" />
+            </button>
 
         {activeRequest ? (
           <div className="py-8 text-center animate-fadeIn">
@@ -96,7 +103,9 @@ export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose 
             </div>
           </div>
         )}
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };
