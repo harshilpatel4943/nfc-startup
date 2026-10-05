@@ -11,6 +11,17 @@ interface CallStaffModalProps {
 export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose }) => {
   const [activeRequest, setActiveRequest] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const handleRequest = (type: string) => {
     setActiveRequest(type);
     setTimeout(() => {

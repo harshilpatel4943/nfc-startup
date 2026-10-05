@@ -34,6 +34,18 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
   const directionRef = useRef<Direction>(direction);
   directionRef.current = direction;
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   // Generate random food position not on snake
   const generateFood = useCallback((currentSnake: Position[]): Position => {
     let newFood: Position;

@@ -12,6 +12,17 @@ export const WifiModal: React.FC<WifiModalProps> = ({ isOpen, onClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const handleCopyPassword = () => {
     navigator.clipboard.writeText(restaurantConfig.wifiPassword);
     setCopied(true);

@@ -15,6 +15,17 @@ export const LoyaltyModal: React.FC<LoyaltyModalProps> = ({ isOpen, onClose }) =
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const handleClaimStamp = () => {
     if (stamps < 9) {
       setStamps((prev) => prev + 1);

@@ -9,6 +9,10 @@ export const NFCTapLoaderOverlay: React.FC<NFCTapLoaderOverlayProps> = ({ onComp
   const [stage, setStage] = useState<'welcome' | 'cave' | 'fade_to_website'>('welcome');
 
   useEffect(() => {
+    // Lock body scrolling while intro overlay is active
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+
     // Preload cover image in background so website is instant upon reveal
     const img = new Image();
     img.src = '/assets/barlow-cover.jpg';
@@ -29,6 +33,8 @@ export const NFCTapLoaderOverlay: React.FC<NFCTapLoaderOverlayProps> = ({ onComp
     }, 4100);
 
     return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
@@ -38,7 +44,8 @@ export const NFCTapLoaderOverlay: React.FC<NFCTapLoaderOverlayProps> = ({ onComp
   return (
     <div
       onClick={onComplete}
-      className={`fixed inset-0 h-[100dvh] w-screen z-[100] flex flex-col items-center justify-center bg-black text-white select-none cursor-pointer overflow-hidden transition-opacity duration-600 ${
+      onTouchMove={(e) => e.preventDefault()}
+      className={`fixed inset-0 h-[100dvh] w-screen z-[100] flex flex-col items-center justify-center bg-black text-white select-none cursor-pointer overflow-hidden touch-none transition-opacity duration-600 ${
         stage === 'fade_to_website' ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
       title="Tap anywhere to skip intro"
