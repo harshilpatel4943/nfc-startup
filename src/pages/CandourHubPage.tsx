@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Heart, BookOpen, Wifi, MessageSquare, Grid, ArrowUpRight, X, Star, 
-  MapPin, Clock, Phone, Bell, Droplet, Receipt, CheckCircle2, Flame, Sparkles, ChevronRight
+  MapPin, Clock, Phone, Bell, Droplet, Receipt, CheckCircle2, Flame, Sparkles, ChevronRight,
+  Sun, Moon, Gamepad2
 } from 'lucide-react';
 import { InstagramIcon } from '../components/common/InstagramIcon';
 import { restaurantConfig } from '../config/restaurantConfig';
+import { EdgeFlowCard } from '../components/common/EdgeFlowCard';
+import { AmbientCaveGlow } from '../components/common/AmbientCaveGlow';
 
 interface CandourHubPageProps {
   onOpenLoyalty: () => void;
@@ -15,6 +18,8 @@ interface CandourHubPageProps {
   onOpenFeedback: () => void;
   onOpenSudoku: () => void;
   onOpenInstagram: () => void;
+  isDarkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
 interface MenuPreviewItem {
@@ -68,6 +73,8 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
   onOpenFeedback,
   onOpenSudoku,
   onOpenInstagram,
+  isDarkMode = true,
+  onToggleDarkMode,
 }) => {
   const [showClipBanner, setShowClipBanner] = useState<boolean>(true);
   const [showStaffDrawer, setShowStaffDrawer] = useState<boolean>(false);
@@ -82,7 +89,12 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F7] text-[#1C1C1E] font-sans flex flex-col justify-between select-none relative overflow-x-hidden pb-24">
+    <div className={`w-full min-h-screen font-sans flex flex-col justify-between select-none relative overflow-x-hidden pb-24 transition-colors duration-300 ${
+      isDarkMode ? 'bg-[#120F0D] text-[#EFE4CF]' : 'bg-[#F2F2F7] text-[#1C1C1E]'
+    }`}>
+      {/* Subterranean Luxury Ambient Firelight Glow */}
+      <AmbientCaveGlow isDarkMode={isDarkMode} />
+
       {/* 1. iOS NFC Tap Welcome Banner */}
       <AnimatePresence>
         {showClipBanner && (
@@ -91,7 +103,9 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-            className="fixed top-2 inset-x-2 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-2xl rounded-2xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.18)] border border-black/10 flex items-center justify-between"
+            className={`fixed top-2 inset-x-2 z-50 max-w-md mx-auto rounded-2xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.18)] flex items-center justify-between backdrop-blur-2xl border ${
+              isDarkMode ? 'bg-[#1A1613]/95 text-[#EFE4CF] border-white/10' : 'bg-white/95 text-[#1C1C1E] border-black/10'
+            }`}
           >
             <div className="flex items-center space-x-3">
               <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#8C5138] to-[#C6A477] flex items-center justify-center text-[#FFF1D1] shadow-md shadow-[#8C5138]/30">
@@ -99,11 +113,11 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-semibold text-gray-500">Welcome to</span>
-                  <span className="text-[11px] font-extrabold text-black uppercase tracking-wider">{restaurantConfig.name}</span>
+                  <span className={`text-[11px] font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Welcome to</span>
+                  <span className={`text-[11px] font-extrabold uppercase tracking-wider ${isDarkMode ? 'text-[#C6A477]' : 'text-black'}`}>{restaurantConfig.name}</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-[#34C759] animate-pulse" />
                 </div>
-                <h4 className="text-xs font-bold text-black leading-snug">Instant NFC Table Dining Experience</h4>
+                <h4 className={`text-xs font-bold leading-snug ${isDarkMode ? 'text-[#EFE4CF]' : 'text-black'}`}>Instant NFC Table Dining Experience</h4>
               </div>
             </div>
 
@@ -140,14 +154,27 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               (e.target as HTMLImageElement).src = '/assets/cave-interior-1.jpg';
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/30" />
 
-          {/* Top Floating Badges */}
+          {/* Top-Right Theme Toggle Button (Dark / Light Mode) */}
           <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold tracking-wider flex items-center gap-1.5 shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-[#34C759] animate-ping" />
-              OPEN NOW
-            </span>
+            <button
+              onClick={onToggleDarkMode}
+              className="px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white text-xs font-bold flex items-center gap-2 shadow-xl hover:bg-black/90 active:scale-95 transition-all cursor-pointer"
+              aria-label="Toggle dark and light mode"
+            >
+              {isDarkMode ? (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-indigo-300" />
+                  <span>Dark Mode</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
 
@@ -167,10 +194,14 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
             </motion.div>
 
             <div className="flex items-center space-x-2 mb-2">
-              <span className="text-[11px] font-bold text-gray-700 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-gray-200 shadow-sm flex items-center gap-1">
+              <span className={`text-[11px] font-bold px-3 py-1 rounded-full border shadow-sm flex items-center gap-1 backdrop-blur-md ${
+                isDarkMode ? 'text-[#EFE4CF] bg-[#1C1815]/90 border-[#382E27]' : 'text-gray-700 bg-white/90 border-gray-200'
+              }`}>
                 <MapPin className="w-3 h-3 text-[#8C5138]" /> {restaurantConfig.city.split(',')[0]}
               </span>
-              <span className="text-[11px] font-bold text-gray-700 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-gray-200 shadow-sm flex items-center gap-1">
+              <span className={`text-[11px] font-bold px-3 py-1 rounded-full border shadow-sm flex items-center gap-1 backdrop-blur-md ${
+                isDarkMode ? 'text-[#EFE4CF] bg-[#1C1815]/90 border-[#382E27]' : 'text-gray-700 bg-white/90 border-gray-200'
+              }`}>
                 <Star className="w-3 h-3 fill-[#FF9500] text-[#FF9500]" /> 4.9 (1.2k)
               </span>
             </div>
@@ -179,12 +210,12 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
           {/* Title & Subtitle */}
           <div className="mt-3">
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-extrabold text-[#1C1C1E] tracking-tight">
+              <h1 className={`text-2xl font-extrabold tracking-tight ${isDarkMode ? 'text-[#EFE4CF]' : 'text-[#1C1C1E]'}`}>
                 {restaurantConfig.name}
               </h1>
-              <span className="px-2 py-0.5 rounded-full bg-[#8C5138]/10 text-[#8C5138] text-[10px] font-extrabold">Verified NFC Table</span>
+              <span className="px-2 py-0.5 rounded-full bg-[#8C5138]/15 text-[#C6A477] text-[10px] font-extrabold">Verified NFC Table</span>
             </div>
-            <p className="text-sm text-gray-500 font-medium mt-0.5">
+            <p className={`text-sm font-medium mt-0.5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
               {restaurantConfig.tagline}
             </p>
           </div>
@@ -205,20 +236,22 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               whileHover={{ scale: 1.015, x: 3 }}
               whileTap={{ scale: 0.97 }}
               onClick={onOpenLoyalty}
-              className="w-full p-3.5 rounded-2xl bg-white border border-gray-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all"
+              className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
+                isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-gray-200/80 text-[#1C1C1E]'
+              }`}
             >
               <div className="flex items-center space-x-3.5">
                 <div className="w-10 h-10 rounded-full bg-[#FFEFF2] flex items-center justify-center text-[#FF2D55] shrink-0 shadow-sm">
                   <Heart className="w-5 h-5 fill-[#FF2D55]" />
                 </div>
                 <div>
-                  <span className="font-bold text-base text-[#1C1C1E] block leading-snug">
+                  <span className={`font-bold text-base block leading-snug ${isDarkMode ? 'text-[#EFE4CF]' : 'text-[#1C1C1E]'}`}>
                     Start earning rewards
                   </span>
                   <span className="text-xs text-gray-400 font-medium">Collect 9 stamps for a free dining item</span>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
             </motion.button>
 
             {/* Card 2: Leave a Google Review */}
@@ -226,7 +259,9 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               whileHover={{ scale: 1.015, x: 3 }}
               whileTap={{ scale: 0.97 }}
               onClick={onOpenReviews}
-              className="w-full p-3.5 rounded-2xl bg-white border border-gray-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all"
+              className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
+                isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-gray-200/80 text-[#1C1C1E]'
+              }`}
             >
               <div className="flex items-center space-x-3.5">
                 <div className="w-10 h-10 rounded-full bg-[#F2F2F7] flex items-center justify-center shrink-0 shadow-sm">
@@ -238,60 +273,39 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                   </svg>
                 </div>
                 <div>
-                  <span className="font-bold text-base text-[#1C1C1E] block leading-snug">
+                  <span className={`font-bold text-base block leading-snug ${isDarkMode ? 'text-[#EFE4CF]' : 'text-[#1C1C1E]'}`}>
                     Leave a Google Review
                   </span>
                   <span className="text-xs text-gray-400 font-medium">Rate us ★★★★★ on Google</span>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
             </motion.button>
 
-            {/* Card 3: View Menu (Fix: Triggers Full Interactive Menu Page) */}
-            <motion.button
-              whileHover={{ scale: 1.015, x: 3 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={onOpenMenu}
-              className="w-full p-3.5 rounded-2xl bg-[#FFF9F2] border border-[#C6A477]/40 shadow-[0_2px_12px_rgba(198,164,119,0.12)] flex items-center justify-between text-left group transition-all"
-            >
-              <div className="flex items-center space-x-3.5">
-                <div className="w-10 h-10 rounded-full bg-[#FFF4E5] flex items-center justify-center text-[#FF9500] shrink-0 shadow-sm">
-                  <BookOpen className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-base text-[#1C1C1E] leading-snug">
-                      View Menu
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-[#8C5138] text-white">
-                      Interactive
-                    </span>
-                  </div>
-                  <span className="text-xs text-gray-500 font-medium">Full Parchment Menu & Pricing</span>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-[#8C5138] group-hover:translate-x-0.5 transition-all" />
-            </motion.button>
+            {/* Card 3: View Menu (Edge Flow Spinning Glowing Border Effect) */}
+            <EdgeFlowCard onClick={onOpenMenu} isDarkMode={isDarkMode} />
 
             {/* Card 4: Connect to Wi-Fi */}
             <motion.button
               whileHover={{ scale: 1.015, x: 3 }}
               whileTap={{ scale: 0.97 }}
               onClick={onOpenWifi}
-              className="w-full p-3.5 rounded-2xl bg-white border border-gray-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all"
+              className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
+                isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-gray-200/80 text-[#1C1C1E]'
+              }`}
             >
               <div className="flex items-center space-x-3.5">
                 <div className="w-10 h-10 rounded-full bg-[#E8F8F0] flex items-center justify-center text-[#34C759] shrink-0 shadow-sm">
                   <Wifi className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="font-bold text-base text-[#1C1C1E] block leading-snug">
+                  <span className={`font-bold text-base block leading-snug ${isDarkMode ? 'text-[#EFE4CF]' : 'text-[#1C1C1E]'}`}>
                     Connect to Wi-Fi
                   </span>
                   <span className="text-xs text-gray-400 font-medium">Auto-copy high-speed guest password</span>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
             </motion.button>
 
             {/* Card 5: Leave Anonymous Feedback */}
@@ -299,41 +313,45 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               whileHover={{ scale: 1.015, x: 3 }}
               whileTap={{ scale: 0.97 }}
               onClick={onOpenFeedback}
-              className="w-full p-3.5 rounded-2xl bg-white border border-gray-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all"
+              className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
+                isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-gray-200/80 text-[#1C1C1E]'
+              }`}
             >
               <div className="flex items-center space-x-3.5">
                 <div className="w-10 h-10 rounded-full bg-[#EBF5FF] flex items-center justify-center text-[#007AFF] shrink-0 shadow-sm">
                   <MessageSquare className="w-5 h-5 fill-[#007AFF]/20" />
                 </div>
                 <div>
-                  <span className="font-bold text-base text-[#1C1C1E] block leading-snug">
+                  <span className={`font-bold text-base block leading-snug ${isDarkMode ? 'text-[#EFE4CF]' : 'text-[#1C1C1E]'}`}>
                     Leave Anonymous Feedback
                   </span>
                   <span className="text-xs text-gray-400 font-medium">Private 100% anonymous guest thoughts</span>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
             </motion.button>
 
-            {/* Card 6: Play Sudoku */}
+            {/* Card 6: Play Snake Game */}
             <motion.button
               whileHover={{ scale: 1.015, x: 3 }}
               whileTap={{ scale: 0.97 }}
               onClick={onOpenSudoku}
-              className="w-full p-3.5 rounded-2xl bg-white border border-[#E5E5EA] shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all"
+              className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
+                isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-[#E5E5EA] text-[#1C1C1E]'
+              }`}
             >
               <div className="flex items-center space-x-3.5">
                 <div className="w-10 h-10 rounded-full bg-[#F5F0FF] flex items-center justify-center text-[#5856D6] shrink-0 shadow-sm">
-                  <Grid className="w-5 h-5" />
+                  <Gamepad2 className="w-5 h-5 text-[#5856D6]" />
                 </div>
                 <div>
-                  <span className="font-bold text-base text-[#1C1C1E] block leading-snug">
-                    Play Sudoku
+                  <span className={`font-bold text-base block leading-snug ${isDarkMode ? 'text-[#EFE4CF]' : 'text-[#1C1C1E]'}`}>
+                    Play Snake Game
                   </span>
-                  <span className="text-xs text-gray-400 font-medium">Fun table game while waiting</span>
+                  <span className="text-xs text-gray-400 font-medium">Fun table arcade game while waiting</span>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
             </motion.button>
           </div>
         </div>
@@ -344,7 +362,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
             <span className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider flex items-center gap-1">
               <Flame className="w-3.5 h-3.5 text-[#FF2D55]" /> POPULAR DISHES
             </span>
-            <button onClick={onOpenMenu} className="text-xs font-bold text-[#8C5138] hover:underline flex items-center">
+            <button onClick={onOpenMenu} className="text-xs font-bold text-[#C6A477] hover:underline flex items-center">
               Full Menu <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -355,7 +373,9 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                 key={item.id}
                 whileHover={{ scale: 1.02, y: -4 }}
                 onClick={onOpenMenu}
-                className="w-44 shrink-0 rounded-2xl bg-white border border-gray-200/80 p-3 shadow-md snap-start cursor-pointer flex flex-col justify-between"
+                className={`w-44 shrink-0 rounded-2xl border p-3 shadow-md snap-start cursor-pointer flex flex-col justify-between ${
+                  isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-gray-200/80 text-[#1C1C1E]'
+                }`}
               >
                 <div>
                   <div className="relative w-full h-28 rounded-xl overflow-hidden mb-2.5 bg-gray-100">
@@ -366,11 +386,11 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                       </span>
                     )}
                   </div>
-                  <h5 className="font-bold text-xs text-[#1C1C1E] line-clamp-1">{item.name}</h5>
+                  <h5 className={`font-bold text-xs line-clamp-1 ${isDarkMode ? 'text-[#EFE4CF]' : 'text-[#1C1C1E]'}`}>{item.name}</h5>
                   <span className="text-[10px] text-gray-400 font-medium">{item.category}</span>
                 </div>
-                <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-gray-100">
-                  <span className="font-extrabold text-xs text-[#1C1C1E]">{item.price}</span>
+                <div className={`flex items-center justify-between mt-2.5 pt-2 border-t ${isDarkMode ? 'border-[#382E27]' : 'border-gray-100'}`}>
+                  <span className={`font-extrabold text-xs ${isDarkMode ? 'text-[#C6A477]' : 'text-[#1C1C1E]'}`}>{item.price}</span>
                   <span className="px-2.5 py-1 rounded-full bg-[#8C5138] text-white text-[10px] font-bold shadow-sm">View</span>
                 </div>
               </motion.div>

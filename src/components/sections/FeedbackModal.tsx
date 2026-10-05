@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Star, CheckCircle } from 'lucide-react';
-import { TribalDivider } from '../common/TribalDivider';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Star, CheckCircle, MessageSquare } from 'lucide-react';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -15,8 +15,6 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
   const [visitAgain, setVisitAgain] = useState<string>('YES');
   const [message, setMessage] = useState<string>('');
   const [submitted, setSubmitted] = useState<boolean>(false);
-
-  if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,119 +45,105 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
   );
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#171411]/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="relative w-full max-w-md bg-[#171411] border border-[#C6A477]/50 rounded-2xl p-6 shadow-2xl cave-dark-texture text-[#EFE4CF]">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-[#5A3926]/30 text-[#C6A477] hover:text-[#FFF1D1]"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {submitted ? (
-          <div className="py-8 text-center animate-fadeIn">
-            <CheckCircle className="w-12 h-12 text-[#C6A477] mx-auto mb-3 animate-bounce" />
-            <h3 className="font-serif text-2xl font-bold text-[#FFF1D1]">Thank You!</h3>
-            <p className="text-xs font-sans text-[#EFE4CF]/80 mt-2 max-w-xs mx-auto">
-              Your feedback helps us continuously refine the Cave dining experience.
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="text-center">
-              <span className="text-[10px] font-sans tracking-[0.25em] text-[#C6A477] uppercase font-bold">
-                PRIVATE GUEST FEEDBACK
-              </span>
-              <h2 className="font-serif text-xl font-bold text-[#FFF1D1] mt-1">
-                TELL US ABOUT YOUR EXPERIENCE
-              </h2>
-              <TribalDivider variant="minimal" />
-            </div>
-
-            {/* Overall Experience Emoji */}
-            <div>
-              <label className="block text-xs font-sans text-[#C6A477] uppercase font-semibold mb-2 text-center">
-                Overall Experience
-              </label>
-              <div className="flex justify-around bg-[#5A3926]/20 p-2 rounded-xl border border-[#5A3926]/40">
-                {['😞', '😐', '🙂', '😍', '🤩'].map((emoji) => (
-                  <button
-                    key={emoji}
-                    type="button"
-                    onClick={() => setOverall(emoji)}
-                    className={`text-2xl p-1.5 rounded-lg transition-transform ${
-                      overall === emoji ? 'bg-[#C6A477]/30 scale-125' : 'opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    {emoji}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Ratings Grid */}
-            <div className="space-y-3 bg-[#5A3926]/15 p-3 rounded-xl border border-[#5A3926]/30">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-sans text-[#EFE4CF]">Food & Flavour</span>
-                {renderStars(foodRating, setFoodRating)}
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-sans text-[#EFE4CF]">Cave Ambience</span>
-                {renderStars(ambienceRating, setAmbienceRating)}
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-sans text-[#EFE4CF]">Hospitality & Service</span>
-                {renderStars(serviceRating, setServiceRating)}
-              </div>
-            </div>
-
-            {/* Visit Again */}
-            <div>
-              <label className="block text-xs font-sans text-[#C6A477] uppercase font-semibold mb-2">
-                Would you visit again?
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {['YES', 'MAYBE', 'NO'].map((opt) => (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => setVisitAgain(opt)}
-                    className={`py-2 rounded-lg text-xs font-sans font-bold tracking-wider transition-all ${
-                      visitAgain === opt
-                        ? 'bg-[#C6A477] text-[#171411] shadow-[0_0_10px_rgba(198,164,119,0.3)]'
-                        : 'bg-[#5A3926]/20 text-[#EFE4CF]/70 border border-[#C6A477]/20'
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Optional Comments */}
-            <div>
-              <label className="block text-xs font-sans text-[#C6A477] uppercase font-semibold mb-1">
-                Tell us what we can improve (Optional)
-              </label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={3}
-                placeholder="Share your thoughts with our restaurant team..."
-                className="w-full bg-[#171411] border border-[#5A3926] rounded-xl p-3 text-xs text-[#EFE4CF] focus:border-[#C6A477] focus:outline-none"
-              />
-            </div>
-
-            {/* Submit Button */}
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            className="relative w-full max-w-md bg-[#171411] border border-[#C6A477]/50 rounded-3xl p-6 shadow-2xl text-[#EFE4CF] overflow-hidden"
+          >
             <button
-              type="submit"
-              className="w-full py-3 rounded-full bg-gradient-to-r from-[#C6A477] to-[#8C5138] text-[#171411] font-sans font-bold text-xs tracking-widest uppercase hover:brightness-110 active:scale-95 transition-all shadow-[0_0_15px_rgba(198,164,119,0.3)]"
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 rounded-full bg-[#5A3926]/30 text-[#C6A477] hover:text-[#FFF1D1] active:scale-95 transition-all"
+              aria-label="Close"
             >
-              SEND FEEDBACK
+              <X className="w-5 h-5" />
             </button>
-          </form>
-        )}
-      </div>
-    </div>
+
+            {submitted ? (
+              <div className="py-8 text-center animate-fadeIn">
+                <CheckCircle className="w-14 h-14 text-[#C6A477] mx-auto mb-3 animate-bounce" />
+                <h3 className="font-serif text-2xl font-bold text-[#FFF1D1]">Thank You!</h3>
+                <p className="text-sm text-[#EFE4CF]/80 mt-2">
+                  Your feedback helps us refine the Cave experience.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="w-10 h-10 rounded-2xl bg-[#007AFF]/15 text-[#007AFF] flex items-center justify-center border border-[#007AFF]/30">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-sans tracking-[0.25em] text-[#C6A477] uppercase font-bold">
+                      100% ANONYMOUS GUEST FEEDBACK
+                    </span>
+                    <h2 className="font-serif text-xl font-bold text-[#FFF1D1]">
+                      TELL US ABOUT YOUR VISIT
+                    </h2>
+                  </div>
+                </div>
+
+                {/* Mood Selector */}
+                <div className="bg-[#5A3926]/20 p-3 rounded-xl border border-[#C6A477]/30 flex justify-around">
+                  {['🤩', '😊', '😐', '🙁'].map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() => setOverall(emoji)}
+                      className={`text-2xl p-2 rounded-lg transition-transform ${
+                        overall === emoji ? 'bg-[#5A3926]/60 scale-125 shadow-md' : 'opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Rating Rows */}
+                <div className="space-y-3 bg-[#5A3926]/10 p-3.5 rounded-xl border border-[#C6A477]/20 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#EFE4CF]">Food & Beverage Quality</span>
+                    {renderStars(foodRating, setFoodRating)}
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#EFE4CF]">Atmosphere & Ambience</span>
+                    {renderStars(ambienceRating, setAmbienceRating)}
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#EFE4CF]">Staff Service Speed</span>
+                    {renderStars(serviceRating, setServiceRating)}
+                  </div>
+                </div>
+
+                {/* Message Field */}
+                <div>
+                  <label className="block text-xs font-bold text-[#C6A477] mb-1">
+                    Comments or Suggestions (Optional)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Share any special compliments or details for management..."
+                    className="w-full bg-[#5A3926]/20 border border-[#C6A477]/30 rounded-xl p-3 text-xs text-[#FFF1D1] placeholder-[#EFE4CF]/40 focus:outline-none focus:border-[#C6A477]"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white font-extrabold text-xs shadow-lg hover:brightness-110 active:scale-98 transition-all"
+                >
+                  Submit Anonymous Feedback
+                </button>
+              </form>
+            )}
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };
