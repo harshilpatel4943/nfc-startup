@@ -19,7 +19,7 @@ export const AmbientCaveGlow: React.FC<AmbientCaveGlowProps> = ({ isDarkMode = t
   if (!isDarkMode) return null;
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 select-none">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 select-none gpu-accelerate">
       {/* 1. Top Warm Terracotta Ambient Light Aura */}
       <motion.div
         animate={{
@@ -32,7 +32,7 @@ export const AmbientCaveGlow: React.FC<AmbientCaveGlowProps> = ({ isDarkMode = t
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[radial-gradient(circle,rgba(140,81,56,0.5)_0%,rgba(18,15,13,0)_70%)] blur-3xl"
+        className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[radial-gradient(circle,rgba(140,81,56,0.5)_0%,rgba(18,15,13,0)_70%)] blur-3xl gpu-accelerate"
       />
 
       {/* 2. Middle Luxury Gold Accent Glow */}
@@ -48,7 +48,7 @@ export const AmbientCaveGlow: React.FC<AmbientCaveGlowProps> = ({ isDarkMode = t
           ease: 'easeInOut',
           delay: 2,
         }}
-        className="absolute top-1/3 -right-28 w-[28rem] h-[28rem] rounded-full bg-[radial-gradient(circle,rgba(198,164,119,0.4)_0%,rgba(18,15,13,0)_75%)] blur-3xl"
+        className="absolute top-1/3 -right-28 w-[28rem] h-[28rem] rounded-full bg-[radial-gradient(circle,rgba(198,164,119,0.4)_0%,rgba(18,15,13,0)_75%)] blur-3xl gpu-accelerate"
       />
 
       {/* 3. Bottom Subterranean Firelight Warmth */}
@@ -63,7 +63,7 @@ export const AmbientCaveGlow: React.FC<AmbientCaveGlowProps> = ({ isDarkMode = t
           ease: 'easeInOut',
           delay: 4,
         }}
-        className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-[radial-gradient(circle,rgba(140,81,56,0.4)_0%,rgba(18,15,13,0)_70%)] blur-3xl"
+        className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-[radial-gradient(circle,rgba(140,81,56,0.4)_0%,rgba(18,15,13,0)_70%)] blur-3xl gpu-accelerate"
       />
 
       {/* 4. Rising Glowing Fire Flame Balls */}
@@ -88,7 +88,7 @@ export const AmbientCaveGlow: React.FC<AmbientCaveGlowProps> = ({ isDarkMode = t
             width: `${ball.size}px`,
             height: `${ball.size}px`,
           }}
-          className="absolute rounded-full bg-gradient-to-t from-[#8C5138] via-[#C6A477] to-[#FFF1D1] shadow-[0_0_12px_rgba(198,164,119,0.95)]"
+          className="absolute rounded-full bg-gradient-to-t from-[#8C5138] via-[#C6A477] to-[#FFF1D1] shadow-[0_0_12px_rgba(198,164,119,0.95)] gpu-accelerate"
         />
       ))}
     </div>

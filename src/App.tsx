@@ -9,7 +9,6 @@ import { CallStaffModal } from './components/sections/CallStaffModal';
 import { LoyaltyModal } from './components/sections/LoyaltyModal';
 import { SnakeModal } from './components/sections/SnakeModal';
 import { NFCTapLoaderOverlay } from './components/sections/NFCTapLoaderOverlay';
-import { CircleCursor } from './components/common/CircleCursor';
 import { restaurantConfig } from './config/restaurantConfig';
 
 export function App() {
@@ -49,9 +48,6 @@ export function App() {
     <div className={`min-h-screen font-sans antialiased flex flex-col items-center justify-start transition-colors duration-300 ${
       isDarkMode ? 'bg-[#0A0807] text-[#EFE4CF]' : 'bg-[#E5E5EA] text-[#1C1C1E]'
     }`}>
-      {/* Blend Mode Difference Custom Circle Cursor */}
-      <CircleCursor />
-
       {/* NFC Tap Multi-Phase Animated Welcome & Preloader Overlay */}
       {showLoaderOverlay && (
         <NFCTapLoaderOverlay onComplete={() => setShowLoaderOverlay(false)} />

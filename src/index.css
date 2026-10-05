@@ -21,6 +21,13 @@
     color: #EFE4CF;
     overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
+  }
+
+  .gpu-accelerate {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
   }
 }
 
