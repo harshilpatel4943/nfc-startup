@@ -32,13 +32,13 @@ export const WifiModal: React.FC<WifiModalProps> = ({ isOpen, onClose }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            className="relative w-full max-w-sm bg-[#171411] border border-[#C6A477]/50 rounded-3xl p-6 shadow-2xl text-[#EFE4CF] overflow-hidden"
+            className="relative w-full max-w-sm bg-[#171411] border border-[#C6A477]/50 rounded-3xl p-5 sm:p-6 shadow-2xl text-[#EFE4CF] my-auto max-h-[88dvh] overflow-y-auto"
           >
             <button
               onClick={onClose}

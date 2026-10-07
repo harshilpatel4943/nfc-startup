@@ -33,13 +33,13 @@ export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 h-[100dvh] w-screen z-50 flex flex-col items-center justify-center my-auto p-4 bg-black/80 backdrop-blur-md overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            className="relative w-full max-w-sm bg-[#171411] border border-[#C6A477]/50 rounded-3xl p-6 shadow-2xl text-[#EFE4CF] my-auto overflow-hidden"
+            className="relative w-full max-w-sm bg-[#171411] border border-[#C6A477]/50 rounded-3xl p-5 sm:p-6 shadow-2xl text-[#EFE4CF] my-auto max-h-[88dvh] overflow-y-auto"
           >
             <button
               onClick={onClose}

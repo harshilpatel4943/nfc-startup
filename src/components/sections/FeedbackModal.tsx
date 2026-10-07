@@ -64,7 +64,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            className="relative w-full max-w-md bg-[#171411] border border-[#C6A477]/50 rounded-3xl p-6 shadow-2xl text-[#EFE4CF] overflow-hidden"
+            className="relative w-full max-w-sm bg-[#171411] border border-[#C6A477]/50 rounded-3xl p-5 sm:p-6 shadow-2xl text-[#EFE4CF] my-auto max-h-[88dvh] overflow-y-auto"
           >
             <button
               onClick={onClose}

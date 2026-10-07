@@ -122,10 +122,10 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
           <div className="flex items-center space-x-2.5 w-max pr-4">
             <button
               onClick={() => handleCategorySelect('ALL')}
-              className={`min-h-[40px] px-4 py-1.5 rounded-full text-xs font-sans font-extrabold tracking-wider uppercase whitespace-nowrap transition-all duration-200 active:scale-95 ${
+              className={`min-h-[40px] px-4 py-1.5 rounded-full text-xs font-sans font-extrabold tracking-wider uppercase whitespace-nowrap transition-all duration-150 active:scale-95 ${
                 selectedCategory === 'ALL'
-                  ? 'bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white shadow-[0_0_15px_rgba(198,164,119,0.5)] border border-[#C6A477]'
-                  : 'bg-[#191512] text-[#EFE4CF]/80 border border-[#C6A477]/30 hover:text-[#FFF1D1]'
+                  ? 'bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white border border-[#C6A477] shadow-sm'
+                  : 'bg-[#191512] text-[#EFE4CF]/80 border border-[#C6A477]/30'
               }`}
             >
               ALL DISHES ({menuItems.length})
@@ -136,10 +136,10 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
                 <button
                   key={cat.id}
                   onClick={() => handleCategorySelect(cat.id)}
-                  className={`min-h-[40px] px-4 py-1.5 rounded-full text-xs font-sans font-extrabold tracking-wider uppercase whitespace-nowrap transition-all duration-200 active:scale-95 ${
+                  className={`min-h-[40px] px-4 py-1.5 rounded-full text-xs font-sans font-extrabold tracking-wider uppercase whitespace-nowrap transition-all duration-150 active:scale-95 ${
                     selectedCategory === cat.id
-                      ? 'bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white shadow-[0_0_15px_rgba(198,164,119,0.5)] border border-[#C6A477]'
-                      : 'bg-[#191512] text-[#EFE4CF]/80 border border-[#C6A477]/30 hover:text-[#FFF1D1]'
+                      ? 'bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white border border-[#C6A477] shadow-sm'
+                      : 'bg-[#191512] text-[#EFE4CF]/80 border border-[#C6A477]/30'
                   }`}
                 >
                   {cat.name} ({count})
