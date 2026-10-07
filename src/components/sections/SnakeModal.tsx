@@ -38,12 +38,16 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
   // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     }
     return () => {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
   }, [isOpen]);
 
@@ -215,7 +219,7 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 h-[100dvh] w-full z-[9999] bg-[#120F0D] text-[#EFE4CF] flex flex-col justify-between p-3.5 sm:p-4 overflow-hidden select-none">
+        <div className="fixed inset-0 h-[100dvh] w-full z-[9999] bg-[#120F0D] text-[#EFE4CF] flex flex-col justify-between p-3.5 sm:p-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] overflow-hidden select-none">
           {/* Fullscreen Header Navigation Bar */}
           <div className="w-full max-w-md mx-auto flex items-center justify-between py-1.5 border-b border-[#C6A477]/20 shrink-0">
             <button

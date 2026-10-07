@@ -18,12 +18,16 @@ export const LoyaltyModal: React.FC<LoyaltyModalProps> = ({ isOpen, onClose }) =
 
   React.useEffect(() => {
     if (isOpen) {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     }
     return () => {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
   }, [isOpen]);
 
@@ -45,13 +49,13 @@ export const LoyaltyModal: React.FC<LoyaltyModalProps> = ({ isOpen, onClose }) =
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] h-[100dvh] w-full flex items-center justify-center p-3 sm:p-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-black/85 backdrop-blur-md overflow-hidden">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="w-full max-w-sm glass-3d-card rounded-3xl p-5 sm:p-6 relative border border-[#C6A477]/30 shadow-[0_25px_60px_rgba(0,0,0,0.9)] max-h-[85vh] overflow-y-auto bg-[#171411] text-[#EFE4CF] shrink-0"
+            className="w-full max-w-sm glass-3d-card rounded-3xl p-5 sm:p-6 relative border border-[#C6A477]/30 shadow-[0_25px_60px_rgba(0,0,0,0.9)] max-h-[85dvh] overflow-y-auto bg-[#171411] text-[#EFE4CF] shrink-0 mx-auto"
           >
           {/* Ambient Lighting Orbs */}
           <div className="absolute -top-12 -left-12 w-36 h-36 bg-[#C6A477]/15 rounded-full blur-2xl pointer-events-none" />
