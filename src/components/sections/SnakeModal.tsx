@@ -117,9 +117,12 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
     touchStartPos.current = null;
   };
 
-  // Handle Game Loop
+  // Handle Game Loop with Progressive Speed Curve & Haptic Vibrations
   useEffect(() => {
     if (!isPlaying || isPaused || isGameOver || !isOpen) return;
+
+    // Calculate dynamic speed based on score (speed increases every 30 pts down to 65ms)
+    const currentSpeed = Math.max(65, INITIAL_SPEED - Math.floor(score / 30) * 8);
 
     const gameInterval = setInterval(() => {
       setSnake((prevSnake) => {
@@ -135,6 +138,9 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
         if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
           setIsGameOver(true);
           setIsPlaying(false);
+          if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+            try { navigator.vibrate([60, 40, 80]); } catch {}
+          }
           return prevSnake;
         }
 
@@ -143,6 +149,9 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
           if (prevSnake[i].x === head.x && prevSnake[i].y === head.y) {
             setIsGameOver(true);
             setIsPlaying(false);
+            if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+              try { navigator.vibrate([60, 40, 80]); } catch {}
+            }
             return prevSnake;
           }
         }
@@ -151,6 +160,9 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
 
         // Check Food Collision
         if (head.x === food.x && head.y === food.y) {
+          if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+            try { navigator.vibrate(35); } catch {}
+          }
           setScore((s) => {
             const nextScore = s + 10;
             if (nextScore > highScore) {
@@ -166,10 +178,10 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
 
         return newSnake;
       });
-    }, INITIAL_SPEED);
+    }, currentSpeed);
 
     return () => clearInterval(gameInterval);
-  }, [isPlaying, isPaused, isGameOver, food, generateFood, highScore, isOpen]);
+  }, [isPlaying, isPaused, isGameOver, food, generateFood, highScore, isOpen, score]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -236,7 +248,7 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
               </div>
               <div>
                 <h3 className="font-extrabold text-base text-white tracking-tight leading-snug">
-                  Cave Snake Game
+                  Cave Arcade Snake
                 </h3>
                 <p className="text-[11px] text-[#C6A477] font-medium flex items-center gap-1">
                   <Move className="w-3 h-3 text-[#C6A477]" /> Swipe on screen to move
@@ -282,16 +294,20 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
                   return (
                     <div
                       key={index}
-                      className={`rounded-sm transition-all duration-75 ${
+                      className={`rounded-sm transition-all duration-75 relative flex items-center justify-center ${
                         isHead
-                          ? 'bg-gradient-to-tr from-[#8C5138] to-[#C6A477] shadow-[0_0_10px_#C6A477]'
+                          ? 'bg-gradient-to-tr from-[#8C5138] to-[#FFF1D1] shadow-[0_0_12px_#FFF1D1] z-10'
                           : isBody
-                          ? 'bg-[#C6A477]/80'
+                          ? 'bg-gradient-to-tr from-[#8C5138]/90 to-[#C6A477]/90'
                           : isFoodCell
-                          ? 'bg-[#FF2D55] animate-pulse rounded-full shadow-[0_0_12px_#FF2D55]'
+                          ? 'bg-[#FF2D55] animate-pulse rounded-full shadow-[0_0_14px_#FF2D55]'
                           : 'bg-white/[0.02]'
                       }`}
-                    />
+                    >
+                      {isHead && (
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#120F0D]" />
+                      )}
+                    </div>
                   );
                 })}
               </div>

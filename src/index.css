@@ -192,3 +192,39 @@
   pointer-events: none;
 }
 
+/* Mobile Metallic Glass Sheen Shimmer */
+@keyframes mobileGlassSheen {
+  0% { transform: translateX(-150%) rotate(25deg); }
+  35%, 100% { transform: translateX(250%) rotate(25deg); }
+}
+
+.mobile-glass-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-glass-sheen::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 241, 209, 0.09) 50%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  animation: mobileGlassSheen 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Mobile Active Touch Feedback */
+.mobile-tap-active:active {
+  transform: scale(0.96);
+  filter: brightness(1.15);
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+

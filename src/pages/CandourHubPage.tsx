@@ -233,10 +233,9 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
           <div className="space-y-2.5">
             {/* Card 1: Start Earning Rewards */}
             <motion.button
-              whileHover={{ scale: 1.015, x: 3 }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.96 }}
               onClick={onOpenLoyalty}
-              className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
+              className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all mobile-glass-sheen ${
                 isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-gray-200/80 text-[#1C1C1E]'
               }`}
             >
@@ -256,8 +255,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
 
             {/* Card 2: Leave a Google Review */}
             <motion.button
-              whileHover={{ scale: 1.015, x: 3 }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.96 }}
               onClick={onOpenReviews}
               className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
                 isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-gray-200/80 text-[#1C1C1E]'
@@ -287,8 +285,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
 
             {/* Card 4: Connect to Wi-Fi */}
             <motion.button
-              whileHover={{ scale: 1.015, x: 3 }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.96 }}
               onClick={onOpenWifi}
               className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
                 isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-gray-200/80 text-[#1C1C1E]'
@@ -310,8 +307,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
 
             {/* Card 5: Leave Anonymous Feedback */}
             <motion.button
-              whileHover={{ scale: 1.015, x: 3 }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.96 }}
               onClick={onOpenFeedback}
               className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
                 isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-gray-200/80 text-[#1C1C1E]'
@@ -333,11 +329,10 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
 
             {/* Card 6: Play Snake Game */}
             <motion.button
-              whileHover={{ scale: 1.015, x: 3 }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.96 }}
               onClick={onOpenSudoku}
-              className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
-                isDarkMode ? 'bg-[#1C1815] border-[#382E27] text-[#EFE4CF]' : 'bg-white border-[#E5E5EA] text-[#1C1C1E]'
+              className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all mobile-glass-sheen ${
+                isDarkMode ? 'bg-[#1C1815] border-[#C6A477]/40 text-[#EFE4CF]' : 'bg-white border-[#E5E5EA] text-[#1C1C1E]'
               }`}
             >
               <div className="flex items-center space-x-3.5">
