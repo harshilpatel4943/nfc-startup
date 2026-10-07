@@ -39,7 +39,7 @@
   --color-bone-ivory: #EFE4CF;
   --color-warm-lamp: #FFF1D1;
   --color-terracotta: #8C5138;
-  
+
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-display: 'Cinzel Decorative', 'Cormorant Garamond', serif;
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -54,7 +54,7 @@
   padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
 }
 
-/* Custom Scrollbar for Mobile and Desktop */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -70,41 +70,38 @@
   background: #C6A477;
 }
 
-/* Subterranean Cave Background with Warm Lamp Vignette */
+/* Cave dark texture */
 .cave-dark-texture {
   background-color: #120F0D;
-  background-image: 
+  background-image:
     radial-gradient(ellipse at 50% 0%, rgba(255, 241, 209, 0.12) 0%, rgba(198, 164, 119, 0.04) 40%, rgba(18, 15, 13, 1) 85%),
     url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='caveNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23caveNoise)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
-/* Mobile Kraft Parchment Card Texture */
+/* Parchment card texture */
 .parchment-texture {
   background-color: #E8DCC6;
-  background-image: 
+  background-image:
     radial-gradient(ellipse at 50% 25%, rgba(248, 242, 230, 0.95) 0%, rgba(232, 220, 198, 0.95) 60%, rgba(206, 188, 158, 0.98) 100%),
     url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperGrain)' opacity='0.045'/%3E%3C/svg%3E");
   color: #2A1A10;
-  box-shadow: 
+  box-shadow:
     inset 0 0 20px rgba(90, 57, 38, 0.15),
     0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
-/* Warm Glow Accents */
+/* Warm Glow */
 .warm-lamp-glow {
   box-shadow: 0 0 25px rgba(255, 241, 209, 0.2), 0 0 50px rgba(198, 164, 119, 0.15);
 }
-
 .warm-lamp-glow-lg {
   box-shadow: 0 0 40px rgba(255, 241, 209, 0.3), 0 0 80px rgba(198, 164, 119, 0.2);
 }
 
-/* Organic Pulse Animation */
 @keyframes subtleLampPulse {
   0%, 100% { opacity: 0.85; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.015); }
 }
-
 .animate-lamp-pulse {
   animation: subtleLampPulse 4s ease-in-out infinite;
 }
@@ -118,16 +115,14 @@
   scrollbar-width: none;
 }
 
-/* 3D Perspective & Depth System */
+/* 3D Perspective */
 .perspective-1000 {
   perspective: 1000px;
   transform-style: preserve-3d;
 }
-
 .preserve-3d {
   transform-style: preserve-3d;
 }
-
 .backface-hidden {
   backface-visibility: hidden;
 }
@@ -138,47 +133,34 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(198, 164, 119, 0.2);
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.6),
     0 2px 10px rgba(0, 0, 0, 0.4),
     inset 0 1px 1px rgba(255, 241, 209, 0.18),
     inset 0 -1px 1px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
-
 .glass-3d-card:hover {
   border-color: rgba(255, 241, 209, 0.35);
-  box-shadow: 
+  box-shadow:
     0 30px 60px rgba(0, 0, 0, 0.8),
     0 0 30px rgba(198, 164, 119, 0.25),
     inset 0 1px 2px rgba(255, 241, 209, 0.3);
 }
 
-/* 3D Floating Animation */
 @keyframes float3D {
-  0%, 100% {
-    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
-  }
-  25% {
-    transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
-  }
-  50% {
-    transform: translateY(-10px) rotateX(0deg) rotateY(3deg);
-  }
-  75% {
-    transform: translateY(-4px) rotateX(-2deg) rotateY(1deg);
-  }
+  0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+  25%      { transform: translateY(-6px) rotateX(2deg) rotateY(-2deg); }
+  50%      { transform: translateY(-10px) rotateX(0deg) rotateY(3deg); }
+  75%      { transform: translateY(-4px) rotateX(-2deg) rotateY(1deg); }
 }
-
 .animate-float-3d {
   animation: float3D 6s ease-in-out infinite;
 }
 
-/* Glowing Neon 3D Border Light */
 .glow-border-3d {
   position: relative;
 }
-
 .glow-border-3d::before {
   content: '';
   position: absolute;
@@ -192,17 +174,14 @@
   pointer-events: none;
 }
 
-/* Mobile Metallic Glass Sheen Shimmer */
 @keyframes mobileGlassSheen {
-  0% { transform: translateX(-150%) rotate(25deg); }
+  0%       { transform: translateX(-150%) rotate(25deg); }
   35%, 100% { transform: translateX(250%) rotate(25deg); }
 }
-
 .mobile-glass-sheen {
   position: relative;
   overflow: hidden;
 }
-
 .mobile-glass-sheen::after {
   content: '';
   position: absolute;
@@ -221,10 +200,123 @@
   pointer-events: none;
 }
 
-/* Mobile Active Touch Feedback */
 .mobile-tap-active:active {
   transform: scale(0.96);
   filter: brightness(1.15);
   transition: transform 0.1s ease, filter 0.1s ease;
 }
 
+/*================================================
+  Snake Game (scoped)
+  ================================================*/
+
+.snake-modal .score {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  font-weight: bold;
+  padding-top: 5px;
+  text-align: center;
+}
+
+.snake-modal .stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(198, 164, 119, 0.5);
+  background: #0b0908;
+  padding: 6px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 28 / 16;
+  touch-action: none;
+}
+
+.snake-modal .tile {
+  background: rgba(0, 0, 0, 0.15);
+  position: absolute;
+  transition-property: background, box-shadow, opacity, transform;
+  transform: translateZ(0);
+  transition-duration: 3000ms;
+}
+
+.snake-modal .tile::before {
+  bottom: 0;
+  content: '';
+  height: 0;
+  left: 0;
+  margin: auto;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 0;
+  transition: opacity 300ms;
+}
+
+.snake-modal .tile.path::before {
+  opacity: 1;
+}
+
+.snake-modal .tile.up::before {
+  border-bottom: 4px inset rgba(255, 255, 255, 0.15);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+
+.snake-modal .tile.down::before {
+  border-top: 4px inset rgba(255, 255, 255, 0.15);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+
+.snake-modal .tile.left::before {
+  border-right: 4px inset rgba(255, 255, 255, 0.15);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.snake-modal .tile.right::before {
+  border-left: 4px inset rgba(255, 255, 255, 0.15);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+@media (max-width: 900px), (max-height: 900px) {
+  .snake-modal .tile.up::before,
+  .snake-modal .tile.down::before,
+  .snake-modal .tile.left::before,
+  .snake-modal .tile.right::before {
+    border-width: 3px;
+  }
+}
+
+@media (max-width: 500px), (max-height: 500px) {
+  .snake-modal .tile.up::before,
+  .snake-modal .tile.down::before,
+  .snake-modal .tile.left::before,
+  .snake-modal .tile.right::before {
+    border-width: 2px;
+  }
+}
+
+.snake-modal .tile.pressed {
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+  transition-duration: 0ms;
+}
+
+.snake-modal .snake-tile {
+  position: absolute;
+  background: #fff;
+  transform: translateZ(0);
+  will-change: transform, left, top;
+}
+
+.snake-modal .food-tile {
+  position: absolute;
+  background: hsla(100, 100%, 60%, 1);
+  border-radius: 50%;
+  transform-origin: center center;
+  will-change: transform;
+}
