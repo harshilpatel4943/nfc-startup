@@ -47,11 +47,11 @@ export const LoyaltyModal: React.FC<LoyaltyModalProps> = ({ isOpen, onClose }) =
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            className="w-full max-w-sm glass-3d-card rounded-3xl p-5 sm:p-6 relative border border-[#C6A477]/30 shadow-[0_25px_60px_rgba(0,0,0,0.9)] my-auto max-h-[88dvh] overflow-y-auto bg-[#171411] text-[#EFE4CF]"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="w-full max-w-sm glass-3d-card rounded-3xl p-5 sm:p-6 relative border border-[#C6A477]/30 shadow-[0_25px_60px_rgba(0,0,0,0.9)] max-h-[85vh] overflow-y-auto bg-[#171411] text-[#EFE4CF] shrink-0"
           >
           {/* Ambient Lighting Orbs */}
           <div className="absolute -top-12 -left-12 w-36 h-36 bg-[#C6A477]/15 rounded-full blur-2xl pointer-events-none" />

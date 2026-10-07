@@ -215,12 +215,12 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 h-[100dvh] w-screen z-[9999] bg-[#120F0D] text-[#EFE4CF] flex flex-col justify-between p-4 overflow-hidden select-none">
+        <div className="fixed inset-0 h-[100dvh] w-full z-[9999] bg-[#120F0D] text-[#EFE4CF] flex flex-col justify-between p-3.5 sm:p-4 overflow-hidden select-none">
           {/* Fullscreen Header Navigation Bar */}
-          <div className="w-full max-w-md mx-auto flex items-center justify-between py-2 border-b border-[#C6A477]/20">
+          <div className="w-full max-w-md mx-auto flex items-center justify-between py-1.5 border-b border-[#C6A477]/20 shrink-0">
             <button
               onClick={onClose}
-              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#191512] border border-[#C6A477]/40 text-xs font-bold text-[#EFE4CF] active:scale-95 transition-all"
+              className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#191512] border border-[#C6A477]/40 text-xs font-bold text-[#EFE4CF] active:scale-95 transition-all"
             >
               <ArrowLeft className="w-4 h-4 text-[#C6A477]" />
               <span>BACK TO HOME</span>
@@ -247,19 +247,19 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Main Arcade Area */}
-          <div className="w-full max-w-md mx-auto flex-1 flex flex-col items-center justify-center my-auto">
+          <div className="w-full max-w-md mx-auto flex-1 flex flex-col items-center justify-center min-h-0 py-2">
             {/* Game Title & Scoreboard */}
-            <div className="w-full flex items-center justify-between mb-3 px-1">
+            <div className="w-full flex items-center justify-between mb-2 px-1 shrink-0">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-xl bg-[#8C5138]/20 border border-[#C6A477]/40 text-[#C6A477] flex items-center justify-center">
+                <div className="w-7 h-7 rounded-xl bg-[#8C5138]/20 border border-[#C6A477]/40 text-[#C6A477] flex items-center justify-center">
                   <Gamepad2 className="w-4 h-4" />
                 </div>
-                <h3 className="font-extrabold text-sm text-white tracking-tight">
+                <h3 className="font-extrabold text-xs text-white tracking-tight">
                   Cave Arcade Snake
                 </h3>
               </div>
 
-              <div className="flex items-center space-x-3 text-xs font-mono font-bold bg-black/60 border border-[#C6A477]/20 rounded-xl px-3 py-1.5">
+              <div className="flex items-center space-x-2.5 text-[11px] font-mono font-bold bg-black/60 border border-[#C6A477]/20 rounded-xl px-2.5 py-1">
                 <div className="flex items-center space-x-1 text-white">
                   <span className="text-gray-400">SCORE:</span>
                   <span className="text-[#C6A477]">{score}</span>
@@ -275,7 +275,7 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
             <div
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
-              className="relative w-full aspect-square bg-black/95 rounded-3xl border-2 border-[#C6A477]/40 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] p-1.5 select-none touch-none"
+              className="relative w-full max-h-[58vh] aspect-square bg-black/95 rounded-2xl border-2 border-[#C6A477]/40 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] p-1 select-none touch-none shrink-0"
             >
               {/* Grid Cells */}
               <div
@@ -360,10 +360,10 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Footer Navigation Back Button Bar */}
-          <div className="w-full max-w-md mx-auto pt-3 border-t border-[#C6A477]/20">
+          <div className="w-full max-w-md mx-auto pt-2 border-t border-[#C6A477]/20 shrink-0">
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white font-extrabold text-xs shadow-lg flex items-center justify-center space-x-2 active:scale-98 transition-all"
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white font-extrabold text-xs shadow-lg flex items-center justify-center space-x-2 active:scale-98 transition-all"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>EXIT GAME TO MAIN MENU</span>
