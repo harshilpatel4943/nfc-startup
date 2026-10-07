@@ -11,12 +11,23 @@ export const ParchmentCard: React.FC<ParchmentCardProps> = ({ item }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div 
+    <div
       onClick={() => setExpanded(!expanded)}
-      className="group relative rounded-xl p-4 sm:p-5 bg-[#1A1613]/85 backdrop-blur-md text-[#EFE4CF] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(198,164,119,0.15)] cursor-pointer select-none border border-[#C6A477]/30 hover:border-[#C6A477]/70"
+      className="
+        group relative rounded-xl p-4 sm:p-5
+        bg-[#1A1613]/85 backdrop-blur-md text-[#EFE4CF]
+        transition-all duration-300
+        cursor-pointer select-none
+        border border-[#C6A477]/30
+        hover:shadow-[0_8px_30px_rgba(198,164,119,0.15)]
+        hover:border-[#C6A477]/70
+        active:shadow-[0_8px_30px_rgba(198,164,119,0.28)]
+        active:border-[#C6A477]/80
+        active:scale-[0.99]
+      "
     >
       {/* Inner Decorative Accent Line */}
-      <div className="absolute inset-1.5 rounded-lg border border-[#C6A477]/15 pointer-events-none group-hover:border-[#C6A477]/30 transition-colors"></div>
+      <div className="absolute inset-1.5 rounded-lg border border-[#C6A477]/15 pointer-events-none transition-colors group-hover:border-[#C6A477]/30 active:border-[#C6A477]/45" />
 
       {/* Main Card Content */}
       <div className="relative z-10 flex items-start justify-between gap-3">
@@ -29,7 +40,7 @@ export const ParchmentCard: React.FC<ParchmentCardProps> = ({ item }) => {
           )}
 
           {/* Item Name */}
-          <h3 className="font-display font-bold text-base sm:text-lg tracking-wide text-[#EFE4CF] group-hover:text-[#FFF1D1] transition-colors leading-tight">
+          <h3 className="font-display font-bold text-base sm:text-lg tracking-wide text-[#EFE4CF] transition-colors group-hover:text-[#FFF1D1] active:text-[#FFF1D1] leading-tight">
             {item.name}
           </h3>
 
@@ -44,7 +55,7 @@ export const ParchmentCard: React.FC<ParchmentCardProps> = ({ item }) => {
           <span className="font-display font-black text-lg sm:text-xl text-[#FFF1D1] whitespace-nowrap tracking-wide drop-shadow-[0_2px_8px_rgba(255,241,209,0.2)]">
             ₹{item.price}
           </span>
-          <div className="p-1 rounded-full bg-[#C6A477]/10 text-[#C6A477] group-hover:bg-[#C6A477]/20 transition-colors mt-2">
+          <div className="p-1 rounded-full bg-[#C6A477]/10 text-[#C6A477] transition-colors mt-2 group-hover:bg-[#C6A477]/20 active:bg-[#C6A477]/25">
             <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`} />
           </div>
         </div>
