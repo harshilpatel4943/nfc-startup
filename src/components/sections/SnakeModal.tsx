@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Play, Pause, RotateCcw, Trophy, Gamepad2, Move, ArrowLeft } from 'lucide-react';
 
@@ -209,10 +210,12 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, isPlaying, isGameOver]);
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 h-[100dvh] w-screen z-50 bg-[#120F0D] text-[#EFE4CF] flex flex-col justify-between p-4 overflow-hidden select-none">
+        <div className="fixed inset-0 h-[100dvh] w-screen z-[9999] bg-[#120F0D] text-[#EFE4CF] flex flex-col justify-between p-4 overflow-hidden select-none">
           {/* Fullscreen Header Navigation Bar */}
           <div className="w-full max-w-md mx-auto flex items-center justify-between py-2 border-b border-[#C6A477]/20">
             <button
@@ -368,6 +371,7 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface NFCTapLoaderOverlayProps {
@@ -41,11 +42,13 @@ export const NFCTapLoaderOverlay: React.FC<NFCTapLoaderOverlayProps> = ({ onComp
     };
   }, [onComplete]);
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <div
       onClick={onComplete}
       onTouchMove={(e) => e.preventDefault()}
-      className={`fixed inset-0 h-[100dvh] w-screen z-[100] flex flex-col items-center justify-center bg-black text-white select-none cursor-pointer overflow-hidden touch-none transition-opacity duration-600 ${
+      className={`fixed inset-0 h-[100dvh] w-screen z-[99999] flex flex-col items-center justify-center bg-black text-white select-none cursor-pointer overflow-hidden touch-none transition-opacity duration-600 ${
         stage === 'fade_to_website' ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
       title="Tap anywhere to skip intro"
@@ -101,6 +104,7 @@ export const NFCTapLoaderOverlay: React.FC<NFCTapLoaderOverlayProps> = ({ onComp
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
