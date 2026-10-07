@@ -450,7 +450,7 @@ export const SnakeModal: React.FC<SnakeModalProps> = ({ isOpen, onClose }) => {
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#8C5138] to-[#C6A477] py-2.5 text-[10px] font-extrabold uppercase tracking-wide text-white shadow-lg active:scale-[0.98]"
             >
               <ArrowLeft className="h-4 w-4" />
-              <span>Exit game to main menu.</span>
+              <span>Exit game to main menu</span>
             </button>
           </div>
         </motion.div>
