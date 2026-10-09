@@ -1,0 +1,26 @@
+import React from 'react';
+import { Bell, Check, MessageSquareText } from 'lucide-react';
+import type { GuestFeedback, GuestRequest } from '../../../data/demoStore';
+
+interface GuestInboxPageProps {
+  requests: GuestRequest[];
+  feedback: GuestFeedback[];
+  onRequestStatus: (id: string, status: GuestRequest['status']) => void;
+  onFeedbackStatus: (id: string, status: GuestFeedback['status']) => void;
+}
+
+const StatusSelect: React.FC<{ value: string; options: string[]; onChange: (value: string) => void }> = ({ value, options, onChange }) => <select aria-label="Update status" value={value} onChange={(event) => onChange(event.target.value)} className="min-h-9 rounded-lg border border-[#E3DDD4] bg-white px-2.5 text-xs font-semibold outline-none focus:border-[#8C5138]">{options.map((option) => <option key={option}>{option}</option>)}</select>;
+
+export const GuestInboxPage: React.FC<GuestInboxPageProps> = ({ requests, feedback, onRequestStatus, onFeedbackStatus }) => {
+  const [tab, setTab] = React.useState<'requests' | 'feedback'>('requests');
+  return <div className="space-y-5">
+    <div><h2 className="text-xl font-bold">Guest inbox</h2><p className="mt-1 text-sm text-[#756C62]">Requests and feedback submitted from the customer page on this device.</p></div>
+    <div className="inline-flex rounded-xl bg-[#EDE9E2] p-1"><button type="button" onClick={() => setTab('requests')} aria-pressed={tab === 'requests'} className={`inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold ${tab === 'requests' ? 'bg-white text-[#211D19] shadow-sm' : 'text-[#756C62]'}`}><Bell size={15} />Service requests <span className="rounded-full bg-[#F2EEE8] px-2 py-0.5 text-[10px]">{requests.length}</span></button><button type="button" onClick={() => setTab('feedback')} aria-pressed={tab === 'feedback'} className={`inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold ${tab === 'feedback' ? 'bg-white text-[#211D19] shadow-sm' : 'text-[#756C62]'}`}><MessageSquareText size={15} />Feedback <span className="rounded-full bg-[#F2EEE8] px-2 py-0.5 text-[10px]">{feedback.length}</span></button></div>
+    {tab === 'requests' ? <section className="overflow-hidden rounded-2xl border border-[#E8E2D9] bg-white">
+      <div className="border-b border-[#EEE9E2] px-5 py-4"><h3 className="font-bold">Table service requests</h3><p className="mt-1 text-xs text-[#756C62]">Mark requests as in progress or done as your team responds.</p></div>
+      <div className="divide-y divide-[#F0ECE6]">{requests.map((request) => <article key={request.id} className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F7F0E8] text-[#8C5138]"><Bell size={17} /></span><div className="min-w-0 flex-1"><div className="font-semibold">{request.type} <span className="font-normal text-[#756C62]">· Table {request.tableNumber}</span></div><div className="mt-1 text-xs text-[#837A70]">{request.createdAt}</div></div><StatusSelect value={request.status} options={['New', 'In progress', 'Done']} onChange={(status) => onRequestStatus(request.id, status as GuestRequest['status'])} /></article>)}
+        {!requests.length && <p className="px-5 py-10 text-center text-sm text-[#756C62]">New table requests will appear here.</p>}</div>
+    </section> : <section className="space-y-3">{feedback.map((entry) => <article key={entry.id} className="rounded-2xl border border-[#E8E2D9] bg-white p-5"><div className="flex flex-col gap-3 sm:flex-row sm:items-start"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700"><MessageSquareText size={17} /></span><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><span className="text-lg" aria-label={`Overall mood ${entry.overall}`}>{entry.overall}</span><span className="text-sm font-bold">Guest feedback</span><span className="text-xs text-[#837A70]">{entry.createdAt}</span></div><p className="mt-2 text-sm leading-relaxed text-[#51483E]">{entry.message || 'No comment left.'}</p><div className="mt-3 flex flex-wrap gap-2 text-xs text-[#756C62]"><span className="rounded-lg bg-[#F8F6F2] px-2.5 py-1.5">Food {entry.foodRating}/5</span><span className="rounded-lg bg-[#F8F6F2] px-2.5 py-1.5">Ambience {entry.ambienceRating}/5</span><span className="rounded-lg bg-[#F8F6F2] px-2.5 py-1.5">Service {entry.serviceRating}/5</span><span className="rounded-lg bg-[#F8F6F2] px-2.5 py-1.5">Visit again: {entry.visitAgain}</span></div></div><StatusSelect value={entry.status} options={['New', 'Reviewed']} onChange={(status) => onFeedbackStatus(entry.id, status as GuestFeedback['status'])} /></div></article>)}{!feedback.length && <div className="rounded-2xl border border-dashed border-[#D7CEC3] bg-white p-10 text-center"><Check size={22} className="mx-auto text-emerald-700" /><p className="mt-2 font-semibold">No feedback yet</p><p className="mt-1 text-sm text-[#756C62]">Guest comments will show here.</p></div>}</section>}
+    <p className="text-xs text-[#837A70]">The starting entries are labeled sample activity. New submissions are stored only in this browser.</p>
+  </div>;
+};

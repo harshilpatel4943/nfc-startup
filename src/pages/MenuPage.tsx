@@ -1,6 +1,8 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { menuCategories, menuItems } from '../data/menuData';
+import { menuCategories } from '../data/menuData';
+import { getPublishedMenuItems } from '../data/demoStore';
+import { PUBLIC_SETUP_STORAGE_KEY } from '../config/restaurantConfig';
 import { ParchmentCard } from '../components/common/ParchmentCard';
 import { TribalDivider } from '../components/common/TribalDivider';
 import { Search, Crown, X, Utensils, ArrowLeft, Flame, Sparkles } from 'lucide-react';
@@ -11,10 +13,19 @@ interface MenuPageProps {
 }
 
 export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
+  const [menuItems, setMenuItems] = useState(getPublishedMenuItems);
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showMaharajaOnly, setShowMaharajaOnly] = useState<boolean>(false);
   const categoryScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const syncPublishedMenu = (event: StorageEvent) => {
+      if (event.key === null || event.key === PUBLIC_SETUP_STORAGE_KEY) setMenuItems(getPublishedMenuItems());
+    };
+    window.addEventListener('storage', syncPublishedMenu);
+    return () => window.removeEventListener('storage', syncPublishedMenu);
+  }, []);
 
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
@@ -26,7 +37,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
       const matchesMaharaja = !showMaharajaOnly || item.isMaharajaSpecial;
       return matchesCategory && matchesSearch && matchesMaharaja;
     });
-  }, [selectedCategory, searchQuery, showMaharajaOnly]);
+  }, [menuItems, selectedCategory, searchQuery, showMaharajaOnly]);
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);

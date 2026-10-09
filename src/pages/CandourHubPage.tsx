@@ -6,7 +6,8 @@ import {
   Sun, Moon, Gamepad2
 } from 'lucide-react';
 import { InstagramIcon } from '../components/common/InstagramIcon';
-import { restaurantConfig } from '../config/restaurantConfig';
+import { getRestaurantConfig } from '../config/restaurantConfig';
+import { addGuestRequest } from '../data/demoStore';
 import { EdgeFlowCard } from '../components/common/EdgeFlowCard';
 import { AmbientCaveGlow } from '../components/common/AmbientCaveGlow';
 
@@ -20,6 +21,8 @@ interface CandourHubPageProps {
   onOpenInstagram: () => void;
   isDarkMode?: boolean;
   onToggleDarkMode?: () => void;
+  tableNumber: number;
+  isServiceEnabled: (id: string) => boolean;
 }
 
 interface MenuPreviewItem {
@@ -75,12 +78,17 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
   onOpenInstagram,
   isDarkMode = true,
   onToggleDarkMode,
+  tableNumber,
+  isServiceEnabled,
 }) => {
+  const restaurantConfig = getRestaurantConfig();
   const [showClipBanner, setShowClipBanner] = useState<boolean>(true);
   const [showStaffDrawer, setShowStaffDrawer] = useState<boolean>(false);
   const [staffSuccessMsg, setStaffSuccessMsg] = useState<string | null>(null);
+  const hasAnyUtility = ['loyalty', 'reviews', 'menu', 'wifi', 'feedback', 'game'].some(isServiceEnabled);
 
   const handleStaffRequest = (requestName: string) => {
+    addGuestRequest(tableNumber, requestName);
     setStaffSuccessMsg(requestName);
     setTimeout(() => {
       setStaffSuccessMsg(null);
@@ -122,7 +130,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
             </div>
 
             <div className="flex items-center space-x-2">
-              <button
+              {isServiceEnabled('menu') && <button
                 onClick={() => {
                   setShowClipBanner(false);
                   onOpenMenu();
@@ -130,7 +138,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                 className="px-4 py-1.5 rounded-full bg-[#8C5138] text-white text-xs font-bold shadow-md shadow-[#8C5138]/30 hover:bg-[#4A2E1D] active:scale-95 transition-all"
               >
                 View Menu
-              </button>
+              </button>}
               <button
                 onClick={() => setShowClipBanner(false)}
                 className="p-1 rounded-full text-gray-400 hover:text-black transition-colors"
@@ -222,7 +230,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
         </div>
 
         {/* 4. Instant Action Cards Vertical Stack (Tapping Menu opens Menu page) */}
-        <div className="px-4 mt-5">
+        {hasAnyUtility && <div className="px-4 mt-5">
           <div className="flex items-center justify-between mb-2.5 px-1">
             <span className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5 text-[#FF9500]" /> INSTANT GUEST UTILITIES
@@ -232,7 +240,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
 
           <div className="space-y-2.5">
             {/* Card 1: Start Earning Rewards */}
-            <motion.button
+            {isServiceEnabled('loyalty') && <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={onOpenLoyalty}
               className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all mobile-glass-sheen ${
@@ -251,10 +259,10 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
-            </motion.button>
+            </motion.button>}
 
             {/* Card 2: Leave a Google Review */}
-            <motion.button
+            {isServiceEnabled('reviews') && <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={onOpenReviews}
               className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
@@ -278,13 +286,13 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
-            </motion.button>
+            </motion.button>}
 
             {/* Card 3: View Menu (Edge Flow Spinning Glowing Border Effect) */}
-            <EdgeFlowCard onClick={onOpenMenu} isDarkMode={isDarkMode} />
+            {isServiceEnabled('menu') && <EdgeFlowCard onClick={onOpenMenu} isDarkMode={isDarkMode} />}
 
             {/* Card 4: Connect to Wi-Fi */}
-            <motion.button
+            {isServiceEnabled('wifi') && <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={onOpenWifi}
               className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
@@ -303,10 +311,10 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
-            </motion.button>
+            </motion.button>}
 
             {/* Card 5: Leave Anonymous Feedback */}
-            <motion.button
+            {isServiceEnabled('feedback') && <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={onOpenFeedback}
               className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
@@ -325,10 +333,10 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
-            </motion.button>
+            </motion.button>}
 
             {/* Card 6: Play Snake Game */}
-            <motion.button
+            {isServiceEnabled('game') && <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={onOpenSudoku}
               className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all mobile-glass-sheen ${
@@ -347,12 +355,12 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
-            </motion.button>
+            </motion.button>}
           </div>
-        </div>
+        </div>}
 
         {/* 5. Popular Dishes Horizontal Snap Carousel */}
-        <div className="mt-8 px-4">
+        {isServiceEnabled('popular') && isServiceEnabled('menu') && <div className="mt-8 px-4">
           <div className="flex items-center justify-between mb-3 px-1">
             <span className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider flex items-center gap-1">
               <Flame className="w-3.5 h-3.5 text-[#FF2D55]" /> POPULAR DISHES
@@ -391,10 +399,10 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               </motion.div>
             ))}
           </div>
-        </div>
+        </div>}
 
         {/* 6. Social & Contact Section */}
-        <div className="mt-8 px-4 flex flex-col items-center justify-center space-y-4">
+        {isServiceEnabled('instagram') && <div className="mt-8 px-4 flex flex-col items-center justify-center space-y-4">
           <div className="flex items-center justify-center space-x-3">
             {/* Instagram */}
             <motion.button
@@ -412,11 +420,11 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
             <Flame className="w-3.5 h-3.5 text-[#8C5138]" />
             <span className="font-extrabold text-black tracking-tight">{restaurantConfig.name}</span>
           </div>
-        </div>
+        </div>}
       </main>
 
       {/* 7. Floating Table Service Action Bar */}
-      <div className="fixed bottom-3 inset-x-3 z-40 max-w-md mx-auto">
+      {isServiceEnabled('staff') && <div className="fixed bottom-3 inset-x-3 z-40 max-w-md mx-auto">
         <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -424,7 +432,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
         >
           <div className="flex items-center space-x-2 pl-2">
             <div className="w-2 h-2 rounded-full bg-[#34C759] animate-ping" />
-            <span className="text-xs font-bold tracking-wider">TABLE #12</span>
+            <span className="text-xs font-bold tracking-wider">TABLE #{tableNumber}</span>
           </div>
 
           <motion.button
@@ -437,7 +445,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
             <span>Call Waiter</span>
           </motion.button>
         </motion.div>
-      </div>
+      </div>}
 
       {/* 8. Table Assistance Modal Drawer */}
       <AnimatePresence>
@@ -459,8 +467,8 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               {staffSuccessMsg ? (
                 <div className="py-6 text-center">
                   <CheckCircle2 className="w-12 h-12 text-[#34C759] mx-auto mb-2 animate-bounce" />
-                  <h4 className="text-base font-bold text-black">Request Sent!</h4>
-                  <p className="text-xs text-gray-500 mt-1">Our staff has been notified: <span className="font-bold text-black">{staffSuccessMsg}</span></p>
+                  <h4 className="text-base font-bold text-black">Request recorded</h4>
+                  <p className="text-xs text-gray-500 mt-1">Demo request recorded for: <span className="font-bold text-black">{staffSuccessMsg}</span></p>
                 </div>
               ) : (
                 <div>
@@ -470,7 +478,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                     </div>
                     <div>
                       <h4 className="text-base font-bold text-black">Table Assistance</h4>
-                      <p className="text-xs text-gray-400 font-medium">Request instant service for Table #12</p>
+                      <p className="text-xs text-gray-400 font-medium">Request instant service for Table #{tableNumber}</p>
                     </div>
                   </div>
 

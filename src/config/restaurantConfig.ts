@@ -19,6 +19,21 @@ export interface RestaurantConfig {
   mapsUrl: string;
 }
 
+export const PUBLIC_SETUP_STORAGE_KEY = 'nfc-restaurant-demo:published-setup';
+
+export function getRestaurantConfig(): RestaurantConfig {
+  if (typeof window === 'undefined') return restaurantConfig;
+
+  try {
+    const saved = window.localStorage.getItem(PUBLIC_SETUP_STORAGE_KEY);
+    if (!saved) return restaurantConfig;
+    const parsed = JSON.parse(saved) as { restaurant?: Partial<RestaurantConfig> };
+    return { ...restaurantConfig, ...parsed.restaurant };
+  } catch {
+    return restaurantConfig;
+  }
+}
+
 export const restaurantConfig: RestaurantConfig = {
   name: "THE CAVE",
   tagline: "REGIONAL INDIAN CUISINE",

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Wifi, Eye, EyeOff, Copy, Check } from 'lucide-react';
-import { restaurantConfig } from '../../config/restaurantConfig';
+import { getRestaurantConfig } from '../../config/restaurantConfig';
 
 interface WifiModalProps {
   isOpen: boolean;
@@ -10,6 +10,7 @@ interface WifiModalProps {
 }
 
 export const WifiModal: React.FC<WifiModalProps> = ({ isOpen, onClose }) => {
+  const restaurantConfig = getRestaurantConfig();
   const [showPassword, setShowPassword] = useState(false);
   const [copied, setCopied] = useState(false);
 

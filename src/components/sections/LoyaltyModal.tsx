@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, Award, Sparkles, CheckCircle2, QrCode, ArrowRight } from 'lucide-react';
-import { restaurantConfig } from '../../config/restaurantConfig';
+import { getRestaurantConfig } from '../../config/restaurantConfig';
 
 interface LoyaltyModalProps {
   isOpen: boolean;
@@ -10,6 +10,7 @@ interface LoyaltyModalProps {
 }
 
 export const LoyaltyModal: React.FC<LoyaltyModalProps> = ({ isOpen, onClose }) => {
+  const restaurantConfig = getRestaurantConfig();
   const [stamps, setStamps] = useState<number>(3); // Initial 3 stamps collected
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -204,7 +205,7 @@ export const LoyaltyModal: React.FC<LoyaltyModalProps> = ({ isOpen, onClose }) =
               </div>
               <h4 className="text-sm font-bold text-[#FFF1D1]">Loyalty Card Saved!</h4>
               <p className="text-xs text-[#EFE4CF]/80">
-                Welcome back, <span className="text-[#C6A477] font-semibold">{name}</span>! Your stamps will auto-sync every time you scan our table QR code.
+              Thanks, <span className="text-[#C6A477] font-semibold">{name}</span>. This sample card is shown for demonstration; member records and stamps are not synced yet.
               </p>
             </motion.div>
           )}

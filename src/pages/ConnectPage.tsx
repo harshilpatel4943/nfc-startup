@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import { Wifi, Phone, MapPin, Star, MessageSquareHeart, Clock, Copy, Check, Eye, EyeOff, Navigation, Bell, ArrowLeft, ExternalLink } from 'lucide-react';
 import { InstagramIcon } from '../components/common/InstagramIcon';
 import { TribalDivider } from '../components/common/TribalDivider';
-import { restaurantConfig } from '../config/restaurantConfig';
+import { getRestaurantConfig } from '../config/restaurantConfig';
 
 interface ConnectPageProps {
   onBackToHome: () => void;
   onOpenFeedback: () => void;
   onOpenStaffModal: () => void;
+  isServiceEnabled: (id: string) => boolean;
 }
 
 export const ConnectPage: React.FC<ConnectPageProps> = ({
   onBackToHome,
   onOpenFeedback,
   onOpenStaffModal,
+  isServiceEnabled,
 }) => {
+  const restaurantConfig = getRestaurantConfig();
   const [showPassword, setShowPassword] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -71,7 +74,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         </div>
 
         {/* 1. In-Restaurant Guest Wi-Fi Card */}
-        <div className="rounded-2xl p-4 bg-gradient-to-b from-[#191512] to-[#14100D] border border-[#C6A477]/50 shadow-xl space-y-3">
+        {isServiceEnabled('wifi') && <div className="rounded-2xl p-4 bg-gradient-to-b from-[#191512] to-[#14100D] border border-[#C6A477]/50 shadow-xl space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2.5">
               <div className="w-9 h-9 rounded-xl bg-[#4A2E1D]/50 border border-[#C6A477]/40 text-[#C6A477] flex items-center justify-center">
@@ -129,10 +132,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               </>
             )}
           </button>
-        </div>
+        </div>}
 
         {/* 2. Call Waiter / Table Service Quick Tile */}
-        <button
+        {isServiceEnabled('staff') && <button
           onClick={onOpenStaffModal}
           className="w-full min-h-[50px] p-3.5 rounded-2xl bg-[#8C5138]/20 border border-[#8C5138]/60 text-left flex items-center justify-between active:scale-95 transition-all shadow-md group"
         >
@@ -150,10 +153,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </div>
           </div>
           <span className="text-xs font-bold text-[#C6A477] group-hover:translate-x-1 transition-transform">→</span>
-        </button>
+        </button>}
 
         {/* 3. Google Reviews 5-Star Card */}
-        <div className="rounded-2xl p-4 bg-gradient-to-b from-[#191512] to-[#14100D] border border-[#C6A477]/40 shadow-xl space-y-2.5 text-center">
+        {isServiceEnabled('reviews') && <div className="rounded-2xl p-4 bg-gradient-to-b from-[#191512] to-[#14100D] border border-[#C6A477]/40 shadow-xl space-y-2.5 text-center">
           <div className="flex items-center justify-center space-x-1 text-[#C6A477]">
             {[...Array(5)].map((_, i) => (
               <Star key={i} className="w-4 h-4 fill-[#C6A477] text-[#C6A477]" />
@@ -172,10 +175,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             <span>LEAVE A 5-STAR GOOGLE REVIEW</span>
             <ExternalLink className="w-3.5 h-3.5 text-[#120F0D]" />
           </button>
-        </div>
+        </div>}
 
         {/* 4. Instagram & Private Feedback Row */}
-        <div className="grid grid-cols-2 gap-2.5">
+        {(isServiceEnabled('instagram') || isServiceEnabled('feedback')) && <div className={'grid gap-2.5 ' + (isServiceEnabled('instagram') && isServiceEnabled('feedback') ? 'grid-cols-2' : 'grid-cols-1')}>
+          {isServiceEnabled('instagram') && <>
           <button
             onClick={handleInstagramClick}
             className="min-h-[52px] p-3 rounded-xl bg-[#191512] border border-[#4A2E1D] hover:border-[#C6A477]/60 active:scale-95 transition-all text-left flex flex-col justify-between"
@@ -193,7 +197,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               </span>
             </div>
           </button>
+          </>}
 
+          {isServiceEnabled('feedback') && <>
           <button
             onClick={onOpenFeedback}
             className="min-h-[52px] p-3 rounded-xl bg-[#191512] border border-[#4A2E1D] hover:border-[#C6A477]/60 active:scale-95 transition-all text-left flex flex-col justify-between"
@@ -211,10 +217,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               </span>
             </div>
           </button>
-        </div>
+          </>}
+        </div>}
 
         {/* 5. Restaurant Location & Hours */}
-        <div className="rounded-2xl p-4 bg-[#191512] border border-[#4A2E1D] shadow-lg space-y-3">
+        {isServiceEnabled('contact') && <div className="rounded-2xl p-4 bg-[#191512] border border-[#4A2E1D] shadow-lg space-y-3">
           <div className="flex items-start space-x-3">
             <div className="p-2 rounded-xl bg-[#120F0D] border border-[#C6A477]/30 text-[#C6A477]">
               <MapPin className="w-4 h-4" />
@@ -268,7 +275,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               <span>CALL NOW</span>
             </a>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );

@@ -3,13 +3,15 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Bell, Droplet, Receipt, UserCheck, CheckCircle2 } from 'lucide-react';
 import { TribalDivider } from '../common/TribalDivider';
+import { addGuestRequest } from '../../data/demoStore';
 
 interface CallStaffModalProps {
   isOpen: boolean;
   onClose: () => void;
+  tableNumber: number;
 }
 
-export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose }) => {
+export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose, tableNumber }) => {
   const [activeRequest, setActiveRequest] = useState<string | null>(null);
 
   React.useEffect(() => {
@@ -24,6 +26,7 @@ export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose 
   }, [isOpen]);
 
   const handleRequest = (type: string) => {
+    addGuestRequest(tableNumber, type);
     setActiveRequest(type);
     setTimeout(() => {
       setActiveRequest(null);
@@ -54,9 +57,9 @@ export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose 
         {activeRequest ? (
           <div className="py-8 text-center animate-fadeIn">
             <CheckCircle2 className="w-12 h-12 text-[#C6A477] mx-auto mb-3 animate-bounce" />
-            <h3 className="font-serif text-xl font-bold text-[#FFF1D1]">Staff Notified</h3>
+            <h3 className="font-serif text-xl font-bold text-[#FFF1D1]">Request recorded</h3>
             <p className="text-xs font-sans text-[#EFE4CF]/80 mt-2">
-              Our team has received your request for: <br />
+              Demo request for: <br />
               <span className="font-bold text-[#C6A477] uppercase tracking-wider">{activeRequest}</span>
             </p>
           </div>

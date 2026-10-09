@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Star, CheckCircle, MessageSquare } from 'lucide-react';
+import { addGuestFeedback } from '../../data/demoStore';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    addGuestFeedback({ overall, foodRating, ambienceRating, serviceRating, visitAgain, message });
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
