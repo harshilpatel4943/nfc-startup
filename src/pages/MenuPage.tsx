@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { menuCategories } from '../data/menuData';
-import { getPublishedMenuItems } from '../data/demoStore';
-import { PUBLIC_SETUP_STORAGE_KEY } from '../config/restaurantConfig';
+import type { MenuCategory, MenuItem } from '../data/menuData';
+import { supabase } from '../lib/supabase';
 import { ParchmentCard } from '../components/common/ParchmentCard';
 import { TribalDivider } from '../components/common/TribalDivider';
 import { Search, Crown, X, Utensils, ArrowLeft, Flame, Sparkles } from 'lucide-react';
@@ -13,19 +12,99 @@ interface MenuPageProps {
 }
 
 export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
-  const [menuItems, setMenuItems] = useState(getPublishedMenuItems);
+  const [menuCategories, setMenuCategories] = useState<MenuCategory[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showMaharajaOnly, setShowMaharajaOnly] = useState<boolean>(false);
   const categoryScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const syncPublishedMenu = (event: StorageEvent) => {
-      if (event.key === null || event.key === PUBLIC_SETUP_STORAGE_KEY) setMenuItems(getPublishedMenuItems());
+    let isCurrent = true;
+
+    const loadMenu = async () => {
+      setIsLoading(true);
+      setLoadError(null);
+
+      try {
+        const { data: restaurant, error: restaurantError } = await supabase
+          .from('restaurants')
+          .select('id')
+          .eq('slug', 'the-cave')
+          .maybeSingle();
+
+        if (restaurantError) throw restaurantError;
+        if (!restaurant) throw new Error('The Cave menu has not been published yet.');
+
+        const [categoriesResult, itemsResult] = await Promise.all([
+          supabase
+            .from('menu_categories')
+            .select('id, category_key, name, title_hindi, subtitle, sort_order')
+            .eq('restaurant_id', restaurant.id)
+            .eq('is_active', true)
+            .order('sort_order'),
+          supabase
+            .from('menu_items')
+            .select('source_id, category_id, name, description, price, is_vegetarian, is_maharaja_special, spiciness_level, tags, sort_order')
+            .eq('restaurant_id', restaurant.id)
+            .eq('is_available', true)
+            .order('sort_order'),
+        ]);
+
+        if (categoriesResult.error) throw categoriesResult.error;
+        if (itemsResult.error) throw itemsResult.error;
+
+        const categories = categoriesResult.data ?? [];
+        const categoriesById = new Map(categories.map((category) => [category.id, category]));
+        const categoryOrder = new Map(categories.map((category, index) => [category.category_key, index]));
+        const items = (itemsResult.data ?? [])
+          .flatMap((item) => {
+            const category = categoriesById.get(item.category_id);
+            if (!category) return [];
+
+            return [{
+              id: item.source_id,
+              name: item.name,
+              description: item.description ?? '',
+              price: Number(item.price),
+              category: category.category_key as MenuItem['category'],
+              isVegetarian: item.is_vegetarian,
+              isMaharajaSpecial: item.is_maharaja_special,
+              spicinessLevel: item.spiciness_level ?? undefined,
+              tags: item.tags ?? [],
+              sortOrder: item.sort_order,
+            }];
+          })
+          .sort((a, b) =>
+            (categoryOrder.get(a.category) ?? 0) - (categoryOrder.get(b.category) ?? 0)
+            || a.sortOrder - b.sortOrder,
+          )
+          .map(({ sortOrder: _sortOrder, ...item }) => item);
+
+        if (isCurrent) {
+          setMenuCategories(categories.map((category) => ({
+            id: category.category_key,
+            name: category.name,
+            titleHindi: category.title_hindi ?? undefined,
+            subtitle: category.subtitle ?? '',
+          })));
+          setMenuItems(items);
+        }
+      } catch (error) {
+        if (isCurrent) {
+          setLoadError(error instanceof Error ? error.message : 'Could not load the menu.');
+        }
+      } finally {
+        if (isCurrent) setIsLoading(false);
+      }
     };
-    window.addEventListener('storage', syncPublishedMenu);
-    return () => window.removeEventListener('storage', syncPublishedMenu);
-  }, []);
+
+    void loadMenu();
+    return () => { isCurrent = false; };
+  }, [reloadKey]);
 
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
@@ -179,7 +258,9 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
 
         {/* Results Counter */}
         <div className="flex items-center justify-between text-[11px] font-sans text-[#C6A477] mb-3 px-1">
-          <span>{filteredItems.length} dishes available</span>
+          <span aria-live="polite">
+            {isLoading ? 'Loading menu from Supabase…' : loadError ? 'Menu unavailable' : `${filteredItems.length} dishes available`}
+          </span>
           {showMaharajaOnly && (
             <span className="text-[#FFF1D1] font-semibold flex items-center space-x-1">
               <Crown className="w-3.5 h-3.5 text-[#C6A477]" />
@@ -189,7 +270,24 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
         </div>
 
         {/* Main List of Dishes */}
-        {filteredItems.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-12 bg-[#191512]/90 backdrop-blur-md rounded-3xl border border-[#C6A477]/30 p-6 shadow-xl" role="status">
+            <Utensils className="w-10 h-10 text-[#C6A477]/70 mx-auto mb-2 animate-pulse" />
+            <p className="text-sm font-serif text-[#EFE4CF]/80">Loading the restaurant menu…</p>
+          </div>
+        ) : loadError ? (
+          <div className="text-center py-10 bg-[#191512]/90 backdrop-blur-md rounded-3xl border border-[#C6A477]/30 p-6 shadow-xl" role="alert">
+            <Utensils className="w-10 h-10 text-[#C6A477]/50 mx-auto mb-2" />
+            <h3 className="font-serif text-lg font-bold text-[#FFF1D1]">Menu could not load</h3>
+            <p className="text-xs font-sans text-[#EFE4CF]/65 mt-2">{loadError}</p>
+            <button
+              onClick={() => setReloadKey((key) => key + 1)}
+              className="mt-4 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#8C5138] to-[#C6A477] text-white font-sans font-extrabold text-xs uppercase shadow-md active:scale-95"
+            >
+              TRY AGAIN
+            </button>
+          </div>
+        ) : filteredItems.length === 0 ? (
           <div className="text-center py-12 bg-[#191512]/90 backdrop-blur-md rounded-3xl border border-[#C6A477]/30 p-6 shadow-xl">
             <Utensils className="w-10 h-10 text-[#C6A477]/50 mx-auto mb-2" />
             <h3 className="font-serif text-lg font-bold text-[#FFF1D1]">No Dishes Found</h3>
