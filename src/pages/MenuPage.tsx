@@ -30,6 +30,12 @@ export const MenuPage: React.FC<MenuPageProps> = ({ onBackToHome }) => {
       setLoadError(null);
 
       try {
+        if (!supabase) {
+          throw new Error(
+            'The live menu is not connected. Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in Vercel, then redeploy.',
+          );
+        }
+
         const { data: restaurant, error: restaurantError } = await supabase
           .from('restaurants')
           .select('id')
