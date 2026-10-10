@@ -82,7 +82,6 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
   isServiceEnabled,
 }) => {
   const restaurantConfig = getRestaurantConfig();
-  const [showClipBanner, setShowClipBanner] = useState<boolean>(true);
   const [showStaffDrawer, setShowStaffDrawer] = useState<boolean>(false);
   const [staffSuccessMsg, setStaffSuccessMsg] = useState<string | null>(null);
   const hasAnyUtility = ['loyalty', 'reviews', 'menu', 'wifi', 'feedback', 'game'].some(isServiceEnabled);
@@ -102,54 +101,6 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
     }`}>
       {/* Subterranean Luxury Ambient Firelight Glow */}
       <AmbientCaveGlow isDarkMode={isDarkMode} />
-
-      {/* 1. iOS NFC Tap Welcome Banner */}
-      <AnimatePresence>
-        {showClipBanner && (
-          <motion.div
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -100, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-            className={`fixed top-2 inset-x-2 z-50 max-w-md mx-auto rounded-2xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.18)] flex items-center justify-between backdrop-blur-2xl border ${
-              isDarkMode ? 'bg-[#1A1613]/95 text-[#EFE4CF] border-white/10' : 'bg-white/95 text-[#1C1C1E] border-black/10'
-            }`}
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#8C5138] to-[#C6A477] flex items-center justify-center text-[#FFF1D1] shadow-md shadow-[#8C5138]/30">
-                <Flame className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className={`text-[11px] font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Welcome to</span>
-                  <span className={`text-[11px] font-extrabold uppercase tracking-wider ${isDarkMode ? 'text-[#C6A477]' : 'text-black'}`}>{restaurantConfig.name}</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#34C759] animate-pulse" />
-                </div>
-                <h4 className={`text-xs font-bold leading-snug ${isDarkMode ? 'text-[#EFE4CF]' : 'text-black'}`}>Instant NFC Table Dining Experience</h4>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              {isServiceEnabled('menu') && <button
-                onClick={() => {
-                  setShowClipBanner(false);
-                  onOpenMenu();
-                }}
-                className="px-4 py-1.5 rounded-full bg-[#8C5138] text-white text-xs font-bold shadow-md shadow-[#8C5138]/30 hover:bg-[#4A2E1D] active:scale-95 transition-all"
-              >
-                View Menu
-              </button>}
-              <button
-                onClick={() => setShowClipBanner(false)}
-                className="p-1 rounded-full text-gray-400 hover:text-black transition-colors"
-                aria-label="Dismiss banner"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <main className="w-full">
         {/* 2. Top Header Storefront Photo */}
