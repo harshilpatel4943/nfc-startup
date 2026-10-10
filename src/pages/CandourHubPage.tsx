@@ -122,7 +122,9 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               <div>
                 <div className="flex items-center gap-1.5">
                   <span className={`text-[11px] font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Welcome to</span>
-                  <span className={`text-[11px] font-extrabold uppercase tracking-wider ${isDarkMode ? 'text-[#C6A477]' : 'text-black'}`}>{restaurantConfig.name}</span>
+                  <span className={`text-[11px] font-extrabold uppercase tracking-wider ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                    {restaurantConfig.name}
+                  </span>
                   <span className="w-1.5 h-1.5 rounded-full bg-[#34C759] animate-pulse" />
                 </div>
                 <h4 className={`text-xs font-bold leading-snug ${isDarkMode ? 'text-[#EFE4CF]' : 'text-black'}`}>Instant NFC Table Dining Experience</h4>
@@ -392,8 +394,12 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                   <h5 className={`font-bold text-xs line-clamp-1 ${isDarkMode ? 'text-[#EFE4CF]' : 'text-[#1C1C1E]'}`}>{item.name}</h5>
                   <span className="text-[10px] text-gray-400 font-medium">{item.category}</span>
                 </div>
-                <div className={`flex items-center justify-between mt-2.5 pt-2 border-t ${isDarkMode ? 'border-[#382E27]' : 'border-gray-100'}`}>
-                  <span className={`font-extrabold text-xs ${isDarkMode ? 'text-[#C6A477]' : 'text-[#1C1C1E]'}`}>{item.price}</span>
+                <div className={`flex items-center justify-between mt-2.5 pt-2 border-t ${
+                  isDarkMode ? 'border-[#382E27]' : 'border-gray-100'
+                }`}>
+                  <span className={`font-extrabold text-xs ${
+                    isDarkMode ? 'text-[#C6A477]' : 'text-[#1C1C1E]'
+                  }`}>{item.price}</span>
                   <span className="px-2.5 py-1 rounded-full bg-[#8C5138] text-white text-[10px] font-bold shadow-sm">View</span>
                 </div>
               </motion.div>
