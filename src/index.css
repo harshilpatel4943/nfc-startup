@@ -12,6 +12,10 @@
 .admin-theme[data-admin-theme="dark"] [class*="bg-[#F3F0EA]"] {
   background-color: #211c18 !important;
 }
+.admin-theme[data-admin-theme="dark"] [class*="bg-[#EDE9E2]"],
+.admin-theme[data-admin-theme="dark"] [class*="bg-[#F2EEE8]"] {
+  background-color: #332920 !important;
+}
 .admin-theme[data-admin-theme="dark"] [class*="text-[#"] {
   color: #e5d8c8 !important;
 }
