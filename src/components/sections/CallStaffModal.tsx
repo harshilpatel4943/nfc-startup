@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Bell, Droplet, Receipt, UserCheck, CheckCircle2 } from 'lucide-react';
 import { TribalDivider } from '../common/TribalDivider';
-import { addGuestRequest } from '../../data/demoStore';
+import { submitCloudRequest } from '../../lib/restaurantCloud';
 
 interface CallStaffModalProps {
   isOpen: boolean;
@@ -13,6 +13,7 @@ interface CallStaffModalProps {
 
 export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose, tableNumber }) => {
   const [activeRequest, setActiveRequest] = useState<string | null>(null);
+  const [requestError, setRequestError] = useState('');
 
   React.useEffect(() => {
     if (isOpen) {
@@ -25,9 +26,10 @@ export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose,
     };
   }, [isOpen]);
 
-  const handleRequest = (type: string) => {
-    addGuestRequest(tableNumber, type);
-    setActiveRequest(type);
+  const handleRequest = async (type: string) => {
+    setRequestError('');
+    try { await submitCloudRequest(tableNumber, type); setActiveRequest(type); }
+    catch (error) { setRequestError(error instanceof Error ? error.message : 'The request could not be sent. Please ask a staff member for help.'); return; }
     setTimeout(() => {
       setActiveRequest(null);
       onClose();
@@ -57,9 +59,9 @@ export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose,
         {activeRequest ? (
           <div className="py-8 text-center animate-fadeIn">
             <CheckCircle2 className="w-12 h-12 text-[#C6A477] mx-auto mb-3 animate-bounce" />
-            <h3 className="font-serif text-xl font-bold text-[#FFF1D1]">Request recorded</h3>
+            <h3 className="font-serif text-xl font-bold text-[#FFF1D1]">Request sent to the restaurant</h3>
             <p className="text-xs font-sans text-[#EFE4CF]/80 mt-2">
-              Demo request for: <br />
+              Table {tableNumber} · <br />
               <span className="font-bold text-[#C6A477] uppercase tracking-wider">{activeRequest}</span>
             </p>
           </div>
@@ -118,6 +120,7 @@ export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose,
                 </div>
               </button>
             </div>
+            {requestError && <p role="alert" className="mt-3 rounded-lg bg-red-950/50 p-3 text-xs text-red-200">{requestError}</p>}
           </div>
         )}
           </motion.div>

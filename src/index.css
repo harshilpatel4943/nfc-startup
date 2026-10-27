@@ -1,5 +1,36 @@
 @import "tailwindcss";
 
+/* Admin workspace theme overrides. Form controls retain explicit high-contrast colors. */
+.admin-theme[data-admin-theme="dark"] {
+  background-color: #15120f;
+  color: #f4eadb;
+  color-scheme: dark;
+}
+.admin-theme[data-admin-theme="dark"] [class*="bg-white"],
+.admin-theme[data-admin-theme="dark"] [class*="bg-[#F6F5F2]"],
+.admin-theme[data-admin-theme="dark"] [class*="bg-[#F8F6F2]"],
+.admin-theme[data-admin-theme="dark"] [class*="bg-[#F3F0EA]"] {
+  background-color: #211c18 !important;
+}
+.admin-theme[data-admin-theme="dark"] [class*="text-[#"] {
+  color: #e5d8c8 !important;
+}
+.admin-theme[data-admin-theme="dark"] [class*="border-[#"] {
+  border-color: #514438 !important;
+}
+.admin-theme[data-admin-theme="dark"] [class*="bg-emerald-50"] {
+  background-color: #12382b !important;
+  color: #b9f2d5 !important;
+}
+.admin-theme[data-admin-theme="dark"] .menu-item-row:hover {
+  background-color: #332920 !important;
+}
+.admin-theme[data-admin-theme="dark"] input,
+.admin-theme[data-admin-theme="dark"] textarea,
+.admin-theme[data-admin-theme="dark"] select {
+  color-scheme: light;
+}
+
 @layer base {
   :root {
     --cave-black: #120F0D;

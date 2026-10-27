@@ -28,19 +28,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   };
 
   const handleReviewClick = () => {
-    if (restaurantConfig.googleReviewUrl.includes('[CLIENT')) {
-      alert('Client Google Review URL configuration placeholder active: ' + restaurantConfig.googleReviewUrl);
-    } else {
-      window.open(restaurantConfig.googleReviewUrl, '_blank');
-    }
+    if (restaurantConfig.googleReviewUrl) window.open(restaurantConfig.googleReviewUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleInstagramClick = () => {
-    if (restaurantConfig.instagramUrl.includes('[CLIENT')) {
-      alert('Client Instagram URL configuration placeholder active: ' + restaurantConfig.instagramUrl);
-    } else {
-      window.open(restaurantConfig.instagramUrl, '_blank');
-    }
+    if (restaurantConfig.instagramUrl) window.open(restaurantConfig.instagramUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -74,7 +66,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         </div>
 
         {/* 1. In-Restaurant Guest Wi-Fi Card */}
-        {isServiceEnabled('wifi') && <div className="rounded-2xl p-4 bg-gradient-to-b from-[#191512] to-[#14100D] border border-[#C6A477]/50 shadow-xl space-y-3">
+        {isServiceEnabled('wifi') && restaurantConfig.wifiNetwork && restaurantConfig.wifiPassword && <div className="rounded-2xl p-4 bg-gradient-to-b from-[#191512] to-[#14100D] border border-[#C6A477]/50 shadow-xl space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2.5">
               <div className="w-9 h-9 rounded-xl bg-[#4A2E1D]/50 border border-[#C6A477]/40 text-[#C6A477] flex items-center justify-center">
@@ -156,7 +148,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         </button>}
 
         {/* 3. Google Reviews 5-Star Card */}
-        {isServiceEnabled('reviews') && <div className="rounded-2xl p-4 bg-gradient-to-b from-[#191512] to-[#14100D] border border-[#C6A477]/40 shadow-xl space-y-2.5 text-center">
+        {isServiceEnabled('reviews') && restaurantConfig.googleReviewUrl && <div className="rounded-2xl p-4 bg-gradient-to-b from-[#191512] to-[#14100D] border border-[#C6A477]/40 shadow-xl space-y-2.5 text-center">
           <div className="flex items-center justify-center space-x-1 text-[#C6A477]">
             {[...Array(5)].map((_, i) => (
               <Star key={i} className="w-4 h-4 fill-[#C6A477] text-[#C6A477]" />
@@ -178,8 +170,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         </div>}
 
         {/* 4. Instagram & Private Feedback Row */}
-        {(isServiceEnabled('instagram') || isServiceEnabled('feedback')) && <div className={'grid gap-2.5 ' + (isServiceEnabled('instagram') && isServiceEnabled('feedback') ? 'grid-cols-2' : 'grid-cols-1')}>
-          {isServiceEnabled('instagram') && <>
+        {(isServiceEnabled('instagram') && restaurantConfig.instagramUrl || isServiceEnabled('feedback')) && <div className={'grid gap-2.5 ' + (isServiceEnabled('instagram') && restaurantConfig.instagramUrl && isServiceEnabled('feedback') ? 'grid-cols-2' : 'grid-cols-1')}>
+          {isServiceEnabled('instagram') && restaurantConfig.instagramUrl && <>
           <button
             onClick={handleInstagramClick}
             className="min-h-[52px] p-3 rounded-xl bg-[#191512] border border-[#4A2E1D] hover:border-[#C6A477]/60 active:scale-95 transition-all text-left flex flex-col justify-between"
@@ -222,7 +214,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
         {/* 5. Restaurant Location & Hours */}
         {isServiceEnabled('contact') && <div className="rounded-2xl p-4 bg-[#191512] border border-[#4A2E1D] shadow-lg space-y-3">
-          <div className="flex items-start space-x-3">
+          {(restaurantConfig.address || restaurantConfig.city) && <div className="flex items-start space-x-3">
             <div className="p-2 rounded-xl bg-[#120F0D] border border-[#C6A477]/30 text-[#C6A477]">
               <MapPin className="w-4 h-4" />
             </div>
@@ -237,9 +229,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                 {restaurantConfig.city}
               </p>
             </div>
-          </div>
+          </div>}
 
-          <div className="flex items-start space-x-3 pt-2.5 border-t border-[#4A2E1D]/50">
+          {(restaurantConfig.openingHours.days || restaurantConfig.openingHours.lunch || restaurantConfig.openingHours.dinner) && <div className="flex items-start space-x-3 pt-2.5 border-t border-[#4A2E1D]/50">
             <div className="p-2 rounded-xl bg-[#120F0D] border border-[#C6A477]/30 text-[#C6A477]">
               <Clock className="w-4 h-4" />
             </div>
@@ -254,10 +246,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                 Lunch: {restaurantConfig.openingHours.lunch} • Dinner: {restaurantConfig.openingHours.dinner}
               </p>
             </div>
-          </div>
+          </div>}
 
-          <div className="grid grid-cols-2 gap-2 pt-2">
-            <a
+          {(restaurantConfig.mapsUrl || restaurantConfig.phone) && <div className={'grid gap-2 pt-2 ' + (restaurantConfig.mapsUrl && restaurantConfig.phone ? 'grid-cols-2' : 'grid-cols-1')}>
+            {restaurantConfig.mapsUrl && <a
               href={restaurantConfig.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -265,16 +257,16 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             >
               <Navigation className="w-3.5 h-3.5 fill-current" />
               <span>DIRECTIONS</span>
-            </a>
+            </a>}
 
-            <a
+            {restaurantConfig.phone && <a
               href={`tel:${restaurantConfig.phone}`}
               className="min-h-[44px] py-2 px-3 rounded-xl bg-[#120F0D] border border-[#C6A477]/40 text-[#FFF1D1] font-sans font-bold text-[11px] tracking-wider uppercase flex items-center justify-center space-x-1.5 active:scale-95"
             >
               <Phone className="w-3.5 h-3.5 text-[#C6A477]" />
               <span>CALL NOW</span>
-            </a>
-          </div>
+            </a>}
+          </div>}
         </div>}
       </div>
     </div>

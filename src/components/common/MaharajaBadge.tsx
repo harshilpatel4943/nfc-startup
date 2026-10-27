@@ -3,9 +3,10 @@ import React from 'react';
 interface MaharajaBadgeProps {
   className?: string;
   size?: 'sm' | 'md';
+  label?: string;
 }
 
-export const MaharajaBadge: React.FC<MaharajaBadgeProps> = ({ className = '', size = 'sm' }) => {
+export const MaharajaBadge: React.FC<MaharajaBadgeProps> = ({ className = '', size = 'sm', label = 'MAHARAJA SPECIAL' }) => {
   return (
     <div className={`inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-gradient-to-r from-[#4A2E1D]/40 via-[#8C5138]/30 to-[#4A2E1D]/40 border border-[#C6A477]/60 text-[#C6A477] font-sans font-bold uppercase tracking-widest shadow-sm ${size === 'sm' ? 'text-[9px]' : 'text-xs'} ${className}`}>
       {/* Royal Crown Seal SVG Icon */}
@@ -14,7 +15,7 @@ export const MaharajaBadge: React.FC<MaharajaBadgeProps> = ({ className = '', si
         <path d="M4 18H20V20H4V18Z" fill="currentColor" />
         <circle cx="12" cy="7" r="1" fill="#FFF1D1" />
       </svg>
-      <span className="font-semibold tracking-[0.15em] text-[#FFF1D1]">MAHARAJA SPECIAL</span>
+      <span className="font-semibold tracking-[0.15em] text-[#FFF1D1]">{label}</span>
     </div>
   );
 };

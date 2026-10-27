@@ -3,27 +3,32 @@ export interface MenuItem {
   name: string;
   description: string;
   price: number;
-  category: 'STARTER' | 'THANDA KA MOUJ' | 'SOUP' | 'MAIN COURSE' | 'RICE & BREADS' | 'DESSERTS';
+  category: string;
   isMaharajaSpecial?: boolean;
   isVegetarian?: boolean;
   spicinessLevel?: 1 | 2 | 3;
   tags?: string[];
+  portionLabel?: string;
+  tasteNote?: string;
+  imageUrl?: string;
+  isPopular?: boolean;
+  isTodaysSpecial?: boolean;
 }
 
 export interface MenuCategory {
   id: string;
   name: string;
-  titleHindi?: string;
   subtitle: string;
+  imageUrl?: string;
 }
 
 export const menuCategories: MenuCategory[] = [
-  { id: 'STARTER', name: 'STARTER', titleHindi: 'शुरुआत', subtitle: 'Handcrafted appetizers & tandoori delights' },
-  { id: 'THANDA KA MOUJ', name: 'THANDA KA MOUJ', titleHindi: 'ठंडा का मौज', subtitle: 'Traditional cold elixirs & refreshing sharbats' },
-  { id: 'SOUP', name: 'SOUP', titleHindi: 'शूर्बा', subtitle: 'Aromatic broths & warm herbal extracts' },
-  { id: 'MAIN COURSE', name: 'MAIN COURSE', titleHindi: 'मुख्य भोजन', subtitle: 'Rich regional curries & slow-cooked gravies' },
-  { id: 'RICE & BREADS', name: 'RICE & BREADS', titleHindi: 'चावल एवं रोटी', subtitle: 'Dum biryanis & clay-oven baked artisanal breads' },
-  { id: 'DESSERTS', name: 'DESSERTS', titleHindi: 'मीठा', subtitle: 'Traditional Indian sweets & royal desserts' },
+  { id: 'STARTER', name: 'STARTER', subtitle: 'Handcrafted appetizers & tandoori delights' },
+  { id: 'THANDA KA MOUJ', name: 'COLD BEVERAGES', subtitle: 'Traditional cold elixirs & refreshing sharbats' },
+  { id: 'SOUP', name: 'SOUP', subtitle: 'Aromatic broths & warm herbal extracts' },
+  { id: 'MAIN COURSE', name: 'MAIN COURSE', subtitle: 'Rich regional curries & slow-cooked gravies' },
+  { id: 'RICE & BREADS', name: 'RICE & BREADS', subtitle: 'Dum biryanis & clay-oven baked artisanal breads' },
+  { id: 'DESSERTS', name: 'DESSERTS', subtitle: 'Traditional Indian sweets & royal desserts' },
 ];
 
 export const menuItems: MenuItem[] = [

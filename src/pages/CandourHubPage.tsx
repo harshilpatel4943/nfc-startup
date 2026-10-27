@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Heart, BookOpen, Wifi, MessageSquare, Grid, ArrowUpRight, X, Star, 
-  MapPin, Clock, Phone, Bell, Droplet, Receipt, CheckCircle2, Flame, Sparkles, ChevronRight,
+  Heart, BookOpen, Wifi, MessageSquare, Grid, ArrowUpRight, X,
+  Clock, Phone, Bell, Droplet, Receipt, CheckCircle2, Flame, Sparkles, ChevronRight,
   Sun, Moon, Gamepad2
 } from 'lucide-react';
 import { InstagramIcon } from '../components/common/InstagramIcon';
 import { getRestaurantConfig } from '../config/restaurantConfig';
-import { addGuestRequest } from '../data/demoStore';
+import type { ManagedMenuItem } from '../data/demoStore';
+import { submitCloudRequest } from '../lib/restaurantCloud';
 import { EdgeFlowCard } from '../components/common/EdgeFlowCard';
 import { AmbientCaveGlow } from '../components/common/AmbientCaveGlow';
 
@@ -23,6 +24,7 @@ interface CandourHubPageProps {
   onToggleDarkMode?: () => void;
   tableNumber: number;
   isServiceEnabled: (id: string) => boolean;
+  popularMenuItems?: ManagedMenuItem[];
 }
 
 interface MenuPreviewItem {
@@ -33,40 +35,6 @@ interface MenuPreviewItem {
   image: string;
   badge?: string;
 }
-
-const FEATURED_ITEMS: MenuPreviewItem[] = [
-  {
-    id: 'f1',
-    name: 'Maharaja Paneer Tikka',
-    price: '₹380',
-    category: 'Starters',
-    image: '/assets/cave-interior-1.jpg',
-    badge: 'Popular',
-  },
-  {
-    id: 'f2',
-    name: 'Subterranean Dal Makhani',
-    price: '₹420',
-    category: 'Mains',
-    image: '/assets/cave-interior-2.jpg',
-    badge: 'House Specialty',
-  },
-  {
-    id: 'f3',
-    name: 'Ancient Firewood Biryani',
-    price: '₹490',
-    category: 'Mains',
-    image: '/assets/cave-interior-1.jpg',
-    badge: 'Chef Favorite',
-  },
-  {
-    id: 'f4',
-    name: 'Kesari Thandai Elixir',
-    price: '₹220',
-    category: 'Elixirs',
-    image: '/assets/cave-interior-2.jpg',
-  },
-];
 
 export const CandourHubPage: React.FC<CandourHubPageProps> = ({
   onOpenLoyalty,
@@ -80,15 +48,20 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
   onToggleDarkMode,
   tableNumber,
   isServiceEnabled,
+  popularMenuItems,
 }) => {
   const restaurantConfig = getRestaurantConfig();
+  const popularSource = popularMenuItems ?? [];
+  const popularItems: MenuPreviewItem[] = popularSource.slice(0, 8).map((item) => ({ id: item.id, name: item.name, price: `₹${item.price}`, category: item.category, image: item.imageUrl ?? '', badge: item.isTodaysSpecial ? "Today's Special" : 'Popular' }));
   const [showStaffDrawer, setShowStaffDrawer] = useState<boolean>(false);
   const [staffSuccessMsg, setStaffSuccessMsg] = useState<string | null>(null);
+  const [staffRequestError, setStaffRequestError] = useState('');
   const hasAnyUtility = ['loyalty', 'reviews', 'menu', 'wifi', 'feedback', 'game'].some(isServiceEnabled);
 
-  const handleStaffRequest = (requestName: string) => {
-    addGuestRequest(tableNumber, requestName);
-    setStaffSuccessMsg(requestName);
+  const handleStaffRequest = async (requestName: string) => {
+    setStaffRequestError('');
+    try { await submitCloudRequest(tableNumber, requestName); setStaffSuccessMsg(requestName); }
+    catch (error) { setStaffRequestError(error instanceof Error ? error.message : 'Request could not be sent.'); return; }
     setTimeout(() => {
       setStaffSuccessMsg(null);
       setShowStaffDrawer(false);
@@ -105,14 +78,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
       <main className="w-full">
         {/* 2. Top Header Storefront Photo */}
         <div className="relative w-full h-56 sm:h-64 overflow-hidden bg-black">
-          <img
-            src="/assets/barlow-cover.jpg"
-            alt="Venue Cover"
-            className="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.1]"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/assets/cave-interior-1.jpg';
-            }}
-          />
+          {restaurantConfig.coverImageUrl && <img src={restaurantConfig.coverImageUrl} alt={`${restaurantConfig.name} cover`} className="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.1]" />}
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/30" />
 
           {/* Top-Right Theme Toggle Button (Dark / Light Mode) */}
@@ -139,31 +105,19 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
 
         {/* 3. Overlapping Logo Avatar & Venue Header */}
         <div className="px-5 -mt-12 relative z-10">
-          <div className="flex items-end justify-between">
+          <div className="flex items-end">
             {/* Round Venue Logo Avatar */}
             <motion.div 
               whileHover={{ scale: 1.05 }}
               className="w-24 h-24 rounded-full bg-[#120F0D] p-1 shadow-2xl border-4 border-white overflow-hidden flex items-center justify-center relative group"
             >
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-[#8C5138] to-[#4A2E1D] flex items-center justify-center text-[#FFF1D1] font-bold text-center text-xs p-1 border-2 border-[#C6A477]/60 shadow-inner">
+              {restaurantConfig.logoUrl ? <img src={restaurantConfig.logoUrl} alt={`${restaurantConfig.name} logo`} className="h-full w-full rounded-full object-cover" /> : <div className="w-full h-full rounded-full bg-gradient-to-br from-[#8C5138] to-[#4A2E1D] flex items-center justify-center text-[#FFF1D1] font-bold text-center text-xs p-1 border-2 border-[#C6A477]/60 shadow-inner">
                 <span className="font-display font-extrabold uppercase tracking-tighter leading-tight text-center">
-                  THE<br />CAVE
+                  {restaurantConfig.name}
                 </span>
-              </div>
+              </div>}
             </motion.div>
 
-            <div className="flex items-center space-x-2 mb-2">
-              <span className={`text-[11px] font-bold px-3 py-1 rounded-full border shadow-sm flex items-center gap-1 backdrop-blur-md ${
-                isDarkMode ? 'text-[#EFE4CF] bg-[#1C1815]/90 border-[#382E27]' : 'text-gray-700 bg-white/90 border-gray-200'
-              }`}>
-                <MapPin className="w-3 h-3 text-[#8C5138]" /> {restaurantConfig.city.split(',')[0]}
-              </span>
-              <span className={`text-[11px] font-bold px-3 py-1 rounded-full border shadow-sm flex items-center gap-1 backdrop-blur-md ${
-                isDarkMode ? 'text-[#EFE4CF] bg-[#1C1815]/90 border-[#382E27]' : 'text-gray-700 bg-white/90 border-gray-200'
-              }`}>
-                <Star className="w-3 h-3 fill-[#FF9500] text-[#FF9500]" /> 4.9 (1.2k)
-              </span>
-            </div>
           </div>
 
           {/* Title & Subtitle */}
@@ -213,7 +167,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
             </motion.button>}
 
             {/* Card 2: Leave a Google Review */}
-            {isServiceEnabled('reviews') && <motion.button
+            {isServiceEnabled('reviews') && restaurantConfig.googleReviewUrl && <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={onOpenReviews}
               className={`w-full p-3.5 rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between text-left group transition-all ${
@@ -310,11 +264,11 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
           </div>
         </div>}
 
-        {/* 5. Popular Dishes Horizontal Snap Carousel */}
+        {/* 5. Today's Specials Horizontal Snap Carousel */}
         {isServiceEnabled('popular') && isServiceEnabled('menu') && <div className="mt-8 px-4">
           <div className="flex items-center justify-between mb-3 px-1">
             <span className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider flex items-center gap-1">
-              <Flame className="w-3.5 h-3.5 text-[#FF2D55]" /> POPULAR DISHES
+              <Flame className="w-3.5 h-3.5 text-[#FF2D55]" /> TODAY'S SPECIALS
             </span>
             <button onClick={onOpenMenu} className="text-xs font-bold text-[#C6A477] hover:underline flex items-center">
               Full Menu <ChevronRight className="w-3.5 h-3.5" />
@@ -322,7 +276,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
           </div>
 
           <div className="flex space-x-3 overflow-x-auto no-scrollbar pb-2 pt-1 -mx-4 px-4 snap-x snap-mandatory">
-            {FEATURED_ITEMS.map((item) => (
+            {popularItems.map((item) => (
               <motion.div
                 key={item.id}
                 whileHover={{ scale: 1.02, y: -4 }}
@@ -333,7 +287,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               >
                 <div>
                   <div className="relative w-full h-28 rounded-xl overflow-hidden mb-2.5 bg-gray-100">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                    {item.image && <img src={item.image} alt={item.name} loading="lazy" className="w-full h-full object-cover" />}
                     {item.badge && (
                       <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-white text-[9px] font-bold">
                         {item.badge}
@@ -349,11 +303,12 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                 </div>
               </motion.div>
             ))}
+            {popularItems.length === 0 && <p className="px-1 text-xs text-gray-400">Mark dishes as Popular or Today’s Special in Admin → Menu to feature them here.</p>}
           </div>
         </div>}
 
         {/* 6. Social & Contact Section */}
-        {isServiceEnabled('instagram') && <div className="mt-8 px-4 flex flex-col items-center justify-center space-y-4">
+        {isServiceEnabled('instagram') && restaurantConfig.instagramUrl && <div className="mt-8 px-4 flex flex-col items-center justify-center space-y-4">
           <div className="flex items-center justify-center space-x-3">
             {/* Instagram */}
             <motion.button
@@ -420,8 +375,8 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
               {staffSuccessMsg ? (
                 <div className="py-6 text-center">
                   <CheckCircle2 className="w-12 h-12 text-[#34C759] mx-auto mb-2 animate-bounce" />
-                  <h4 className="text-base font-bold text-black">Request recorded</h4>
-                  <p className="text-xs text-gray-500 mt-1">Demo request recorded for: <span className="font-bold text-black">{staffSuccessMsg}</span></p>
+                  <h4 className="text-base font-bold text-black">Request sent to staff</h4>
+                  <p className="text-xs text-gray-500 mt-1">Table {tableNumber} · <span className="font-bold text-black">{staffSuccessMsg}</span></p>
                 </div>
               ) : (
                 <div>
@@ -475,6 +430,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
                       </div>
                     </button>
                   </div>
+                  {staffRequestError && <p role="alert" className="mt-3 text-xs text-red-700">{staffRequestError}</p>}
                 </div>
               )}
             </motion.div>

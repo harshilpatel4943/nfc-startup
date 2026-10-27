@@ -1,5 +1,5 @@
 -- Trianox / The Cave: schema and menu seed for the current frontend.
--- Safe to rerun: seed rows are upserted using stable source ids and category keys.
+-- Safe to rerun: existing restaurant, category, and menu edits are never overwritten.
 
 create extension if not exists pgcrypto;
 
@@ -61,6 +61,15 @@ alter table public.restaurants add column if not exists google_review_url text;
 alter table public.restaurants add column if not exists instagram_url text;
 alter table public.restaurants add column if not exists maps_url text;
 alter table public.restaurants add column if not exists is_published boolean not null default false;
+-- Customer-page branding and configurable utility content. Images are URLs from Storage, not DB blobs.
+alter table public.restaurants add column if not exists logo_url text;
+alter table public.restaurants add column if not exists cover_image_url text;
+alter table public.restaurants add column if not exists instagram_profile_url text;
+alter table public.restaurants add column if not exists wifi_network text;
+alter table public.restaurants add column if not exists wifi_password text;
+alter table public.restaurants add column if not exists opening_hours jsonb not null default '{}'::jsonb;
+alter table public.restaurants add column if not exists services jsonb not null default '{}'::jsonb;
+alter table public.restaurants add column if not exists experience_content jsonb not null default '[]'::jsonb;
 alter table public.menu_categories add column if not exists category_key text;
 alter table public.menu_categories add column if not exists title_hindi text;
 alter table public.menu_categories add column if not exists subtitle text;
@@ -75,6 +84,9 @@ alter table public.menu_items add column if not exists spiciness_level smallint;
 alter table public.menu_items add column if not exists tags text[] not null default '{}';
 alter table public.menu_items add column if not exists is_available boolean not null default true;
 alter table public.menu_items add column if not exists sort_order integer not null default 0;
+alter table public.menu_items add column if not exists image_url text;
+alter table public.menu_items add column if not exists is_popular boolean not null default false;
+alter table public.menu_items add column if not exists is_todays_special boolean not null default false;
 update public.menu_items set source_id = 'legacy-' || id::text where source_id is null;
 alter table public.menu_items alter column source_id set not null;
 create unique index if not exists menu_categories_restaurant_key_uidx
@@ -92,6 +104,16 @@ alter table public.menu_categories enable row level security;
 alter table public.menu_items enable row level security;
 
 grant select on public.restaurants, public.menu_categories, public.menu_items to anon, authenticated;
+
+-- Public restaurant photos live in this bucket. Upload/delete is restricted to signed-in users.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('restaurant-assets', 'restaurant-assets', true, 5242880, array['image/jpeg','image/png','image/webp']::text[])
+on conflict (id) do update set public = true, file_size_limit = 5242880,
+  allowed_mime_types = array['image/jpeg','image/png','image/webp']::text[];
+drop policy if exists "Signed-in admins upload restaurant assets" on storage.objects;
+drop policy if exists "Signed-in admins update restaurant assets" on storage.objects;
+drop policy if exists "Signed-in admins delete restaurant assets" on storage.objects;
+drop policy if exists "Public view restaurant assets" on storage.objects;
 
 drop policy if exists "Public can read published restaurants" on public.restaurants;
 create policy "Public can read published restaurants"
@@ -126,23 +148,8 @@ values
   ('THE CAVE', 'the-cave', 'REGIONAL INDIAN CUISINE',
    'A journey through India''s regional flavours',
    'An immersive dining sanctuary where prehistoric art, cave architecture, organic firelight, and rich regional Indian cuisine converge.',
-   '+91 98765 43210', '+91 98765 43210',
-   'Plot No. 42, Cave Temple Avenue, Regional Cultural District', 'Ahmedabad, Gujarat',
-   '[CLIENT GOOGLE REVIEW URL]', '[CLIENT INSTAGRAM URL]',
-   'https://maps.google.com/?q=The+Cave+Regional+Indian+Cuisine', true)
-on conflict (slug) do update set
-  name = excluded.name,
-  tagline = excluded.tagline,
-  descriptor = excluded.descriptor,
-  description = excluded.description,
-  phone = excluded.phone,
-  whatsapp = excluded.whatsapp,
-  address = excluded.address,
-  city = excluded.city,
-  google_review_url = excluded.google_review_url,
-  instagram_url = excluded.instagram_url,
-  maps_url = excluded.maps_url,
-  is_published = excluded.is_published;
+   '', '', '', '', '', '', '', true)
+on conflict (slug) do nothing;
 
 insert into public.menu_categories
   (restaurant_id, category_key, name, title_hindi, subtitle, sort_order)
@@ -157,12 +164,7 @@ cross join (values
   ('DESSERTS', 'DESSERTS', 'मीठा', 'Traditional Indian sweets & royal desserts', 5)
 ) as v(category_key, name, title_hindi, subtitle, sort_order)
 where r.slug = 'the-cave'
-on conflict (restaurant_id, category_key) do update set
-  name = excluded.name,
-  title_hindi = excluded.title_hindi,
-  subtitle = excluded.subtitle,
-  sort_order = excluded.sort_order,
-  is_active = true;
+on conflict (restaurant_id, category_key) do nothing;
 
 insert into public.menu_items
   (restaurant_id, category_id, source_id, name, description, price,
@@ -211,13 +213,4 @@ join (values
 join public.menu_categories c
   on c.restaurant_id = r.id and c.category_key = v.category_key
 where r.slug = 'the-cave'
-on conflict (restaurant_id, source_id) do update set
-  category_id = excluded.category_id,
-  name = excluded.name,
-  description = excluded.description,
-  price = excluded.price,
-  is_vegetarian = excluded.is_vegetarian,
-  is_maharaja_special = excluded.is_maharaja_special,
-  spiciness_level = excluded.spiciness_level,
-  tags = excluded.tags,
-  is_available = true;
+on conflict (restaurant_id, source_id) do nothing;

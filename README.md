@@ -1,32 +1,42 @@
-# NFC Restaurant Demo
+# NFC Restaurant Menu
 
-A customer-facing NFC restaurant page and browser-only admin demo for The Cave.
+Customer-facing restaurant pages and a protected restaurant admin workspace. Restaurant profile, menu, table links, drafts, guest requests, and feedback are stored in Supabase.
 
-## Open the demo
+## Run locally
 
-- Customer experience: run `npm run dev` and open the local URL.
-- Restaurant admin: append `/admin` to the local URL.
-- Table-specific customer page: use `/?table=12` (replace 12 with a table number).
+1. Copy `.env.example` to `.env.local` and set the Supabase project URL, publishable key, and restaurant slug.
+2. Install dependencies with `npm ci`.
+3. Start the dev server with `npm run dev`.
 
-The admin can edit menu items and restaurant information, save drafts, and publish those changes to the customer preview. Guest-service visibility switches apply immediately. Guest feedback and table service requests submitted from the customer page appear in the admin inbox when both pages use the same browser.
+The customer page opens at `/`. Add `?table=1` (or another active table number) for an NFC or QR link. The admin workspace is at `/admin`.
 
-This is a frontend demonstration. Its data stays in browser local storage; it does not provide restaurant sign-in, cloud sync, staff notifications, payments, ordering, or POS integration. Use Reset site data in your browser settings to clear demo changes.
+## Deploy to Vercel
 
-## Project folders
+- Set the build command to `npm run build` and the output directory to `dist`.
+- Add `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and `VITE_RESTAURANT_SLUG` in Vercel's project environment variables for each deployment environment.
+- The publishable key is intended for browser use. Never put a Supabase secret or service-role key in a `VITE_` variable.
+- The Supabase Edge Function `upload-restaurant-image` is used for authenticated image uploads. Set its `ALLOWED_ORIGINS` secret to the exact Vercel production origin and any preview origin you use (comma-separated origins, including `https://`).
+- The app expects the restaurant slug `the-cave` unless `VITE_RESTAURANT_SLUG` is set.
 
-- `src/App.tsx` chooses the customer experience or `/admin`.
-- `src/config/restaurantConfig.ts` holds restaurant defaults and public settings.
-- `src/data/menuData.ts` contains sample menu and category definitions.
-- `src/data/demoStore.ts` handles local demo storage and guest submissions.
-- `src/features/admin/AdminApp.tsx` contains admin state, draft, and publish actions.
-- `src/features/admin/components/` contains the admin layout and navigation.
-- `src/features/admin/pages/` contains overview, menu, tables, services, inbox, and settings pages.
-- `src/pages/` contains customer-facing pages.
-- `src/components/common/` contains shared visual components.
-- `src/components/sections/` contains guest modals and interactions.
+## Supabase setup
 
-## Main commands
+- SQL migrations in `supabase/migrations/` are the schema source of truth. They are already applied to the connected pilot project; apply them in order when setting up another project.
+- `supabase/the-cave-menu.sql` and `supabase/pilot-operations.sql` are setup scripts for manual SQL Editor setup. Avoid running these on a project that already has the migrations applied.
+- `supabase/grant-restaurant-admin.sql` assigns an existing Auth user to a restaurant. Replace the example email before running it.
+- Restaurant images are stored in the public `restaurant-assets` bucket. Uploads require an authenticated restaurant admin and are limited to JPEG, PNG, or WebP files up to 5 MB.
+
+## Project layout
+
+- `src/pages/` contains customer pages.
+- `src/features/admin/` contains the restaurant admin workspace.
+- `src/components/` contains shared UI and guest interactions.
+- `src/data/` contains default/demo content and shared data types.
+- `src/lib/` contains Supabase client and restaurant cloud operations.
+- `supabase/migrations/` contains ordered database changes.
+- `supabase/functions/` contains the image upload Edge Function.
+
+## Commands
 
 - `npm run dev` starts the local development server.
-- `npm run build` type-checks and builds the frontend.
-- `npm run preview` serves the production build locally.
+- `npm run build` type-checks and builds the frontend into `dist/`.
+- `npm run preview` previews the production build locally.

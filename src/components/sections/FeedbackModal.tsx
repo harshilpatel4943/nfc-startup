@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Star, CheckCircle, MessageSquare } from 'lucide-react';
-import { addGuestFeedback } from '../../data/demoStore';
+import { submitCloudFeedback } from '../../lib/restaurantCloud';
 
 interface FeedbackModalProps {
   isOpen: boolean;
   onClose: () => void;
+  tableNumber: number;
 }
 
-export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
+export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, tableNumber }) => {
   const [overall, setOverall] = useState<string>('🤩');
   const [foodRating, setFoodRating] = useState<number>(5);
   const [ambienceRating, setAmbienceRating] = useState<number>(5);
@@ -17,6 +18,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
   const [visitAgain, setVisitAgain] = useState<string>('YES');
   const [message, setMessage] = useState<string>('');
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState('');
 
   React.useEffect(() => {
     if (isOpen) {
@@ -33,10 +35,11 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
     };
   }, [isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addGuestFeedback({ overall, foodRating, ambienceRating, serviceRating, visitAgain, message });
-    setSubmitted(true);
+    setSubmitError('');
+    try { await submitCloudFeedback(tableNumber, { overall, foodRating, ambienceRating, serviceRating, visitAgain, message }); setSubmitted(true); }
+    catch (error) { setSubmitError(error instanceof Error ? error.message : 'Feedback could not be sent. Please try again.'); return; }
     setTimeout(() => {
       setSubmitted(false);
       onClose();
@@ -145,6 +148,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                     Comments or Suggestions (Optional)
                   </label>
                   <textarea
+                    maxLength={1000}
                     rows={3}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -159,6 +163,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                 >
                   Submit Anonymous Feedback
                 </button>
+                {submitError && <p role="alert" className="text-xs text-red-300">{submitError}</p>}
               </form>
             )}
           </motion.div>

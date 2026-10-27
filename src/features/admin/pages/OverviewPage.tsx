@@ -18,7 +18,7 @@ const MiniStat: React.FC<{ label: string; value: string | number; detail: string
 );
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({ setup, requests, feedback, onNavigate }) => {
-  const openRequests = requests.filter((request) => request.status !== 'Done').length;
+  const openRequests = requests.length;
   const newFeedback = feedback.filter((entry) => entry.status === 'New').length;
 
   return (
@@ -31,7 +31,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ setup, requests, fee
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Restaurant overview">
         <MiniStat label="Menu items" value={setup.menuItems.length} detail={`${setup.menuItems.filter((item) => item.isAvailable).length} currently available`} icon={Utensils} tone="bg-orange-50 text-orange-700" />
         <MiniStat label="Active table links" value={setup.tables.filter((table) => table.isActive).length} detail="Ready for NFC or QR tags" icon={Wifi} tone="bg-blue-50 text-blue-700" />
-        <MiniStat label="Open service requests" value={openRequests} detail="Sample and browser demo activity" icon={Bell} tone="bg-amber-50 text-amber-700" />
+        <MiniStat label="Open service requests" value={openRequests} detail="Requests expire after five minutes" icon={Bell} tone="bg-amber-50 text-amber-700" />
         <MiniStat label="Feedback to review" value={newFeedback} detail={`${feedback.length} feedback entries in this demo`} icon={MessageSquareText} tone="bg-violet-50 text-violet-700" />
       </section>
 
@@ -44,13 +44,13 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ setup, requests, fee
         </section>
 
         <section className="rounded-2xl border border-[#E8E2D9] bg-white p-5 sm:p-6">
-          <div><h3 className="text-base font-bold">Recent guest activity</h3><p className="mt-1 text-sm text-[#756C62]">Sample entries make the customer walkthrough easy.</p></div>
+          <div><h3 className="text-base font-bold">Recent guest activity</h3><p className="mt-1 text-sm text-[#756C62]">Current requests and guest feedback.</p></div>
           <div className="mt-5 space-y-3">
-            {requests.slice(0, 3).map((request) => <div key={request.id} className="flex items-center gap-3 rounded-xl border border-[#EEE9E2] p-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F5EEE7] text-[#8C5138]"><Bell size={16} /></span><div className="min-w-0 flex-1"><div className="truncate text-sm font-semibold">{request.type} <span className="font-normal text-[#756C62]">· Table {request.tableNumber}</span></div><div className="mt-0.5 text-xs text-[#837A70]">{request.createdAt}</div></div><span className="rounded-full bg-[#F6F0E7] px-2.5 py-1 text-[10px] font-bold text-[#725C42]">{request.status}</span></div>)}
+            {requests.slice(0, 3).map((request) => <div key={request.id} className="flex items-center gap-3 rounded-xl border border-[#EEE9E2] p-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F5EEE7] text-[#8C5138]"><Bell size={16} /></span><div className="min-w-0 flex-1"><div className="truncate text-sm font-semibold">{request.type} <span className="font-normal text-[#756C62]">· Table {request.tableNumber}</span></div><div className="mt-0.5 text-xs text-[#837A70]">{request.createdAt}</div></div></div>)}
             {!requests.length && <p className="rounded-xl bg-[#FAF8F5] p-4 text-sm text-[#756C62]">Guest requests will appear here.</p>}
           </div>
           <button type="button" onClick={() => onNavigate('inbox')} className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-lg text-sm font-bold text-[#8C5138] hover:underline">Open guest inbox <ArrowRight size={15} /></button>
-          <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#F7F5F1] px-3.5 py-3 text-xs text-[#756C62]"><Clock3 size={15} />Activity data is stored in this browser for the demo.</div>
+          <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#F7F5F1] px-3.5 py-3 text-xs text-[#756C62]"><Clock3 size={15} />Guest requests are removed automatically after five minutes.</div>
         </section>
       </div>
 
