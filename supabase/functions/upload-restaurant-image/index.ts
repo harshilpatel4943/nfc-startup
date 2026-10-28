@@ -5,6 +5,7 @@ const localOrigins = new Set([
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://192.168.1.7:5173',
+  'https://nfc-startup-snowy.vercel.app',
 ]);
 const configuredOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
   .split(',').map((origin) => origin.trim()).filter(Boolean);
