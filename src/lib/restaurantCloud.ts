@@ -244,8 +244,8 @@ export async function publishCloudSetup(setup: DemoSetup): Promise<string> {
   const id = await getRestaurantId(getPageRestaurantSlug());
   const { data, error } = await supabase.rpc('publish_restaurant_setup', { p_slug: getPageRestaurantSlug(), p_setup: setup });
   if (error) {
-    console.error('Publishing restaurant changes failed:', error.code);
-    throw new Error('Could not publish these changes. Check the form and your access, then try again.');
+    console.error('Publishing restaurant changes failed:', { code: error.code, message: error.message, details: error.details });
+    throw new Error(error.message || 'Could not publish these changes. Check the form and your access, then try again.');
   }
   const keepPaths = new Set([
     setup.restaurant.logoUrl, setup.restaurant.coverImageUrl,
