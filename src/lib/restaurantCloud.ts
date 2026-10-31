@@ -213,6 +213,14 @@ export async function loadCloudAdminSetup(base: DemoSetup): Promise<{ setup: Dem
   const setup = draft ? {
     ...publishedSetup,
     ...draft,
+    tables: Array.isArray(draft.tables) ? draft.tables.map((table) => {
+      const publishedTable = publishedSetup.tables.find((entry) => entry.number === table.number);
+      return {
+        ...table,
+        id: publishedTable?.id ?? table.id,
+        accessToken: table.accessToken ?? publishedTable?.accessToken,
+      };
+    }) : publishedSetup.tables,
     menuCategories: Array.isArray(draft.menuCategories) ? draft.menuCategories : publishedSetup.menuCategories,
     menuItems: Array.isArray(draft.menuItems) ? draft.menuItems.map((item) => {
       const publishedItem = publishedSetup.menuItems.find((entry) => entry.id === item.id);
