@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { MenuCategory, MenuItem } from '../data/menuData';
 import { supabase } from '../lib/supabase';
 import { createClientId, getPageRestaurantSlug, getRestaurantId } from '../lib/restaurantCloud';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Utensils, Maximize2, X, Sparkles } from 'lucide-react';
+import { ArrowLeft, Utensils, Maximize2, X } from 'lucide-react';
 import { TribalDivider } from '../components/common/TribalDivider';
 
 interface ExperiencePageProps {

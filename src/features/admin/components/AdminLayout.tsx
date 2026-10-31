@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, Bell, BellRing, BookOpen, Check, ChevronDown, CircleHelp, ClipboardList, LayoutDashboard, Moon, Settings2, Store, Sun, Utensils, Wifi } from 'lucide-react';
+import { ArrowUpRight, Bell, BellRing, BookOpen, Check, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, LayoutDashboard, Moon, Settings2, Store, Sun, Utensils, Wifi } from 'lucide-react';
 import { getPageRestaurantSlug } from '../../../lib/restaurantCloud';
 import type { GuestRequest } from '../../../data/demoStore';
 
@@ -81,7 +81,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ section, onSectionChan
               <a href={`/?restaurant=${encodeURIComponent(getPageRestaurantSlug())}&preview=1`} target="_blank" rel="noreferrer" className="hidden min-h-10 items-center gap-2 rounded-xl border border-[#DCD3C8] px-3 text-sm font-semibold text-[#42382E] hover:bg-[#F8F6F2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C5138] sm:inline-flex"><ArrowUpRight size={15} />Customer preview</a>
               <button type="button" onClick={onSaveDraft} className="min-h-10 rounded-xl border border-[#DCD3C8] px-3 text-xs font-semibold text-[#42382E] hover:bg-[#F8F6F2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C5138] sm:text-sm">Save draft</button>
               <button type="button" onClick={onPublish} disabled={isPublishing} aria-live="polite" className={`inline-flex min-h-10 items-center gap-2 rounded-xl px-3 text-xs font-bold text-white shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C5138] focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-70 sm:px-4 sm:text-sm ${hasUnpublishedChanges ? 'bg-[#8C5138] hover:bg-[#70402D]' : 'bg-[#557B64] hover:bg-[#42634F]'}`}>
-                {isPublishing ? <><span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />Publishing…</> : hasUnpublishedChanges ? <><span className="h-2 w-2 rounded-full bg-[#FFE08A]" />Publish changes</> : 'Up to date'}
+                {isPublishing ? <><span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />Publishing…</> : notice.startsWith('Published.') ? <><CheckCircle2 size={15} />Published successfully</> : hasUnpublishedChanges ? <><span className="h-2 w-2 rounded-full bg-[#FFE08A]" />Publish changes</> : 'Up to date'}
               </button>
               <button type="button" onClick={onSignOut} className="min-h-10 rounded-xl px-2 text-xs font-semibold text-[#645A50] hover:bg-[#F8F6F2]">Sign out</button>
             </div>
@@ -92,7 +92,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ section, onSectionChan
         </header>
 
         <main className="mx-auto max-w-[1440px] p-4 pb-16 sm:p-6 lg:p-8">
-          {notice && <div role="status" aria-live="polite" className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">{notice}</div>}
+          {notice && <div role="status" aria-live="polite" className="mb-5 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 size={18} className="mt-0.5 shrink-0 text-emerald-600" aria-hidden="true" /><div><p className="font-bold">{notice.startsWith('Published.') ? 'Published successfully' : 'Saved successfully'}</p><p className="mt-0.5 font-medium">{notice}</p></div></div>}
           {publishedAt && <p className="mb-4 text-xs text-[#756C62]">Last published {new Date(publishedAt).toLocaleString()}</p>}
           {children}
         </main>

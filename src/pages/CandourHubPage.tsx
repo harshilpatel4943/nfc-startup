@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Heart, BookOpen, Wifi, MessageSquare, Grid, ArrowUpRight, X,
-  Clock, Phone, Bell, Droplet, Receipt, CheckCircle2, Flame, Sparkles, ChevronRight,
+  Heart, Wifi, MessageSquare, X,
+  Bell, Droplet, Receipt, CheckCircle2, Flame, Sparkles, ChevronRight,
   Sun, Moon, Gamepad2
 } from 'lucide-react';
 import { InstagramIcon } from '../components/common/InstagramIcon';
