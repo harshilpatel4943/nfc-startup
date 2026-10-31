@@ -23,6 +23,7 @@ interface CandourHubPageProps {
   isDarkMode?: boolean;
   onToggleDarkMode?: () => void;
   tableNumber: number;
+  accessToken?: string;
   isServiceEnabled: (id: string) => boolean;
   popularMenuItems?: ManagedMenuItem[];
 }
@@ -47,6 +48,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
   isDarkMode = true,
   onToggleDarkMode,
   tableNumber,
+  accessToken,
   isServiceEnabled,
   popularMenuItems,
 }) => {
@@ -60,7 +62,7 @@ export const CandourHubPage: React.FC<CandourHubPageProps> = ({
 
   const handleStaffRequest = async (requestName: string) => {
     setStaffRequestError('');
-    try { await submitCloudRequest(tableNumber, requestName); setStaffSuccessMsg(requestName); }
+    try { await submitCloudRequest(tableNumber, requestName, accessToken); setStaffSuccessMsg(requestName); }
     catch (error) { setStaffRequestError(error instanceof Error ? error.message : 'Request could not be sent.'); return; }
     setTimeout(() => {
       setStaffSuccessMsg(null);

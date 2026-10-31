@@ -57,11 +57,18 @@ export async function uploadRestaurantImage(file: File): Promise<string> {
   return data.publicUrl;
 }
 
-export async function submitCloudRequest(tableNumber: number, type: string): Promise<void> {
+export async function submitCloudRequest(tableNumber: number, type: string, accessToken?: string): Promise<void> {
   if (!supabase) throw new Error('The restaurant service is not configured.');
-  const restaurantId = await getRestaurantId(getPageRestaurantSlug());
-  const { error } = await supabase.from('guest_requests').insert({ restaurant_id: restaurantId, table_number: tableNumber, request_type: type });
-  if (error) throw new Error('The request could not be sent. Please try again in a moment.');
+  if (!accessToken) throw new Error('This table link is missing its security token. Scan the current QR code from your table.');
+  const { error } = await supabase.rpc('submit_guest_request', {
+    p_slug: getPageRestaurantSlug(),
+    p_table_number: tableNumber,
+    p_access_token: accessToken,
+    p_request_type: type,
+  });
+  if (error) throw new Error(error.code === '42501' || error.code === '22023'
+    ? 'This table link is invalid or offline. Scan the current QR code from your table.'
+    : 'The request could not be sent. Please try again in a moment.');
 }
 
 export async function submitCloudFeedback(tableNumber: number, entry: Omit<GuestFeedback, 'id' | 'createdAt' | 'status'>): Promise<void> {
@@ -194,7 +201,7 @@ export async function loadCloudAdminSetup(base: DemoSetup): Promise<{ setup: Dem
   const publishedSetup: DemoSetup = {
     ...base,
     restaurant: { ...base.restaurant, ...(config ?? {}), wifiNetwork: restaurant.wifi_network ?? '', wifiPassword: restaurant.wifi_password ?? '', openingHours: restaurant.opening_hours ?? base.restaurant.openingHours },
-    tables: (tablesResult.data ?? []).map((table) => ({ id: table.id, number: table.table_number, isActive: table.is_active })),
+    tables: (tablesResult.data ?? []).map((table) => ({ id: table.id, number: table.table_number, isActive: table.is_active, accessToken: table.access_token })),
     menuCategories: (categoriesResult.data ?? []).filter((category) => category.is_active).map((category) => ({ id: category.category_key, name: category.name, subtitle: category.subtitle ?? '', imageUrl: category.image_url ?? '' })),
     menuItems: (itemsResult.data ?? []).map((item) => {
       const category = categoriesById.get(item.category_id);

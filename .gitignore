@@ -26,4 +26,10 @@ dist-ssr
 *.sln
 *.sw?
 
+# AI agent tooling (local only)
+.opencode
+launches
+.agents
+skills-lock.json
+
 .vercel

@@ -24,6 +24,7 @@ The customer page opens at `/`. Add `?table=1` (or another active table number) 
 - `supabase/the-cave-menu.sql` and `supabase/pilot-operations.sql` are setup scripts for manual SQL Editor setup. Avoid running these on a project that already has the migrations applied.
 - `supabase/grant-restaurant-admin.sql` assigns an existing Auth user to a restaurant. Replace the example email before running it.
 - Restaurant images are stored in the public `restaurant-assets` bucket. Uploads require an authenticated restaurant admin and are limited to JPEG, PNG, or WebP files up to 5 MB.
+- Published table links include a per-table access token. Regenerate/copy links from the admin Tables & NFC page after applying the secure table access migration; old `?table=` links can still show the menu but cannot submit table service requests.
 
 ## Project layout
 

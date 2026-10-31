@@ -138,8 +138,10 @@ export const AdminApp: React.FC = () => {
     setIsPublishing(true);
     try {
       const now = await publishCloudSetup(setup);
+      const refreshed = await loadCloudAdminSetup(createDefaultSetup());
+      setSetup(refreshed.setup);
       setPublishedAt(now);
-      setSavedSetupSnapshot(setupSnapshot(setup));
+      setSavedSetupSnapshot(setupSnapshot(refreshed.publishedSetup));
       setNotice('Published. Customer pages now show the latest restaurant data.');
       setCloudError('');
     }

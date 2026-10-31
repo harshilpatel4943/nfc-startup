@@ -9,9 +9,10 @@ interface CallStaffModalProps {
   isOpen: boolean;
   onClose: () => void;
   tableNumber: number;
+  accessToken?: string;
 }
 
-export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose, tableNumber }) => {
+export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose, tableNumber, accessToken }) => {
   const [activeRequest, setActiveRequest] = useState<string | null>(null);
   const [requestError, setRequestError] = useState('');
 
@@ -28,7 +29,7 @@ export const CallStaffModal: React.FC<CallStaffModalProps> = ({ isOpen, onClose,
 
   const handleRequest = async (type: string) => {
     setRequestError('');
-    try { await submitCloudRequest(tableNumber, type); setActiveRequest(type); }
+    try { await submitCloudRequest(tableNumber, type, accessToken); setActiveRequest(type); }
     catch (error) { setRequestError(error instanceof Error ? error.message : 'The request could not be sent. Please ask a staff member for help.'); return; }
     setTimeout(() => {
       setActiveRequest(null);

@@ -32,6 +32,7 @@ function CustomerExperience() {
     return true;
   };
   const tableParam = Number(new URLSearchParams(window.location.search).get('table'));
+  const tableAccessToken = new URLSearchParams(window.location.search).get('token') ?? undefined;
   const tableNumber = Number.isInteger(tableParam) && tableParam > 0 ? tableParam : 1;
   const [tableIsActive, setTableIsActive] = useState<boolean | null>(null);
   const [currentTab, setCurrentTab] = useState<'home' | 'menu' | 'experience' | 'connect'>('home');
@@ -168,6 +169,7 @@ function CustomerExperience() {
               isDarkMode={isDarkMode}
               onToggleDarkMode={() => setIsDarkMode((prev) => !prev)}
               tableNumber={tableNumber}
+              accessToken={tableAccessToken}
               isServiceEnabled={isServiceEnabled}
               popularMenuItems={popularMenuItems}
             />
@@ -190,6 +192,7 @@ function CustomerExperience() {
           isOpen={isStaffOpen}
           onClose={() => setIsStaffOpen(false)}
           tableNumber={tableNumber}
+          accessToken={tableAccessToken}
         />}
 
         {tableIsActive && isServiceEnabled('loyalty') && <LoyaltyModal

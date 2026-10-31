@@ -11,6 +11,7 @@ export interface RestaurantTable {
   id: string;
   number: number;
   isActive: boolean;
+  accessToken?: string;
 }
 
 export interface GuestService {
