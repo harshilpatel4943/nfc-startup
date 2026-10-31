@@ -145,9 +145,9 @@ export const AdminApp: React.FC = () => {
       setNotice('Published. Customer pages now show the latest restaurant data.');
       setCloudError('');
     }
-    catch {
-      console.error('Could not publish restaurant changes.');
-      setCloudError('Could not publish these changes. Check the form and your access, then try again.');
+    catch (error) {
+      console.error('Could not publish restaurant changes:', error);
+      setCloudError(error instanceof Error ? error.message : 'Could not publish these changes. Check the form and your access, then try again.');
     }
     finally { setIsPublishing(false); }
     window.setTimeout(() => setNotice(''), 5000);
@@ -156,7 +156,10 @@ export const AdminApp: React.FC = () => {
   const updateServices = async (nextSetup: DemoSetup) => {
     setSetup(nextSetup);
     try { await publishCloudSetup(nextSetup); setNotice('Guest section visibility updated for this restaurant.'); }
-    catch { setCloudError('Could not update guest services. Please try again.'); }
+    catch (error) {
+      console.error('Could not update guest services:', error);
+      setCloudError(error instanceof Error ? error.message : 'Could not update guest services. Please try again.');
+    }
     window.setTimeout(() => setNotice(''), 4000);
   };
 
